@@ -1,0 +1,44 @@
+Olimpo
+Zona de exterior (nubes) horizontal larga
+
+Tuto Moverse
+Mini templo con parkour para llave
+Tuto ataque basico (jarron) [referencia a zelda]
+Mini templo parkour + jarrones para encontrar llave
+Tuto cambio personaje 
+Tuto de 2 ataque
+Mini templo 2 ataque + 1 ataque + parkour
+PUZLE DE LUZ -> ZEUS!
+
+Templo de Poseidon
+-Una sala vertical con arena que va bajando a medida 
+que completas los subniveles
+Una sala con enemigos, derrotarlos a todos y pulsar boton
+Una sala puzle (tuberias a mi estilo)
+Una sala grande con jarrones (vida) "sala inutil" larga sin nada que hacer
+
+Boss - Telequines
+
+
+Tartaro
+salas llenas de enemigos, sin una progresion concreta
+laberintico
+
+Puertas correctas aleatorias
+
+
+SALAS TRAMPA
+
+Sala pequeña con muchos enemigos
+Sala vacia sin nada
+Sala vacia con una plataforma que caes al vacio (lava o lo que sea)
+Sala vacia con un jarron
+Sala que cae lava
+
+SE PUEDE EXPANDIR CON MAS SALAS
+
+SALAS CORRECTAS
+
+3 niveles generados con las puertas
+
+FINAL

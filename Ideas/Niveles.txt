@@ -1,0 +1,56 @@
+
+AB C D E F G H
+
+
+
+       AAAAA      AAAAA      AAAAA      AAAAAAA
+       B   B      B   B      B   B      B     B
+       B   B      B   B      B   B      B     B
+   D   B F B  GC  B FDB      B FDB      B  FD B
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+
+Templo 1
+BAAAAAAAAAAAAAAAAAAAB
+B                   B
+B                 H B
+BC             EEEEEB
+BE           E      B
+B  E    E E         B
+B     E     E       B
+B F E         E  G  B
+BAAAAAAAAAAAAAAAAAAAB
+
+Templo 2
+BAAAAAAAAAAAAAAAAAAAB
+B                   B
+B              GGGGGB
+BG           G EEEEEB
+BE G    G G  E      B
+B  E  G E E G       B
+B   G E     E   G   B
+B F E  GGGGGGGG EGGGB
+BAAAAAAAAAAAAAAAAAAAB
+
+Templo 3
+BAAAAAAAAAAAAAAAAAAAB
+B                   B
+B               DDD B
+BEEE           EEEEEB
+B   E               B
+B    E              B
+B     E             B
+B F    E       DDDD B
+BAAAAAAAAAAAAAAAAAAAB
+
+
+Templo final
+BAA AAAAAAAAAAAAA AAB
+BG            G     B
+BE     C      E  C  B
+BG G   E E      EEE B
+BEEEE     DEE       B
+BC        D  EG     B
+BE        D   EE    B
+BCFE   C  D      E  B
+BAAAAAAAAAAAAAAAAAAAB
