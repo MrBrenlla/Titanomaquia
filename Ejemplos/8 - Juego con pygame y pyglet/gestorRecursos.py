@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from email import message
 import pygame, sys, os
 from pygame.locals import *
 
@@ -23,9 +24,9 @@ class GestorRecursos(object):
             fullname = os.path.join('imagenes', nombre)
             try:
                 imagen = pygame.image.load(fullname)
-            except pygame.error, message:
-                print 'Cannot load image:', fullname
-                raise SystemExit, message
+            except pygame.error:
+                print ('Cannot load image:', fullname)
+                raise (SystemExit, message)
             imagen = imagen.convert()
             if colorkey is not None:
                 if colorkey is -1:

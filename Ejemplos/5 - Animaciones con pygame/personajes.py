@@ -60,11 +60,11 @@ class MiSprite(pygame.sprite.Sprite):
         self.rect.bottom = self.posicion[1] - self.scroll[1]
 
     def establecerPosicionPantalla(self, scrollDecorado):
-        self.scroll = scrollDecorado;
-        (scrollx, scrolly) = self.scroll;
-        (posx, posy) = self.posicion;
-        self.rect.left = posx - scrollx;
-        self.rect.bottom = posy - scrolly;
+        self.scroll = scrollDecorado
+        (scrollx, scrolly) = self.scroll
+        (posx, posy) = self.posicion
+        self.rect.left = posx - scrollx
+        self.rect.bottom = posy - scrolly
 
     def incrementarPosicion(self, incremento):
         (posx, posy) = self.posicion
@@ -94,7 +94,7 @@ class Personaje(MiSprite):
     def __init__(self, archivoImagen, archivoCoordenadas, numImagenes, velocidadCarrera, velocidadSalto, retardoAnimacion):
 
         # Primero invocamos al constructor de la clase padre
-        MiSprite.__init__(self);
+        MiSprite.__init__(self)
 
         # Se carga la hoja
         self.hoja = GestorRecursos.CargarImagen(archivoImagen,-1)
@@ -107,10 +107,10 @@ class Personaje(MiSprite):
         # Leemos las coordenadas de un archivo de texto
         datos = GestorRecursos.CargarArchivoCoordenadas(archivoCoordenadas)
         datos = datos.split()
-        self.numPostura = 1;
-        self.numImagenPostura = 0;
-        cont = 0;
-        self.coordenadasHoja = [];
+        self.numPostura = 1
+        self.numImagenPostura = 0
+        cont = 0
+        self.coordenadasHoja = []
         for linea in range(0, 3):
             self.coordenadasHoja.append([])
             tmp = self.coordenadasHoja[linea]
@@ -119,7 +119,7 @@ class Personaje(MiSprite):
                 cont += 4
 
         # El retardo a la hora de cambiar la imagen del Sprite (para que no se mueva demasiado rápido)
-        self.retardoMovimiento = 0;
+        self.retardoMovimiento = 0
 
         # En que postura esta inicialmente
         self.numPostura = QUIETO
@@ -158,7 +158,7 @@ class Personaje(MiSprite):
             # Si ha pasado, actualizamos la postura
             self.numImagenPostura += 1
             if self.numImagenPostura >= len(self.coordenadasHoja[self.numPostura]):
-                self.numImagenPostura = 0;
+                self.numImagenPostura = 0
             if self.numImagenPostura < 0:
                 self.numImagenPostura = len(self.coordenadasHoja[self.numPostura])-1
             self.image = self.hoja.subsurface(self.coordenadasHoja[self.numPostura][self.numImagenPostura])
@@ -255,7 +255,7 @@ class Jugador(Personaje):
     "Cualquier personaje del juego"
     def __init__(self):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
-        Personaje.__init__(self,'Jugador.png','coordJugador.txt', [6, 12, 6], VELOCIDAD_JUGADOR, VELOCIDAD_SALTO_JUGADOR, RETARDO_ANIMACION_JUGADOR);
+        Personaje.__init__(self,'Jugador.png','coordJugador.txt', [6, 12, 6], VELOCIDAD_JUGADOR, VELOCIDAD_SALTO_JUGADOR, RETARDO_ANIMACION_JUGADOR)
 
 
     def mover(self, teclasPulsadas, arriba, abajo, izquierda, derecha):
@@ -277,7 +277,7 @@ class NoJugador(Personaje):
     "El resto de personajes no jugadores"
     def __init__(self, archivoImagen, archivoCoordenadas, numImagenes, velocidad, velocidadSalto, retardoAnimacion):
         # Primero invocamos al constructor de la clase padre con los parametros pasados
-        Personaje.__init__(self, archivoImagen, archivoCoordenadas, numImagenes, velocidad, velocidadSalto, retardoAnimacion);
+        Personaje.__init__(self, archivoImagen, archivoCoordenadas, numImagenes, velocidad, velocidadSalto, retardoAnimacion)
 
     # Aqui vendria la implementacion de la IA segun las posiciones de los jugadores
     # La implementacion por defecto, este metodo deberia de ser implementado en las clases inferiores
@@ -294,7 +294,7 @@ class Sniper(NoJugador):
     "El enemigo 'Sniper'"
     def __init__(self):
         # Invocamos al constructor de la clase padre con la configuracion de este personaje concreto
-        NoJugador.__init__(self,'Sniper.png','coordSniper.txt', [5, 10, 6], VELOCIDAD_SNIPER, VELOCIDAD_SALTO_SNIPER, RETARDO_ANIMACION_SNIPER);
+        NoJugador.__init__(self,'Sniper.png','coordSniper.txt', [5, 10, 6], VELOCIDAD_SNIPER, VELOCIDAD_SALTO_SNIPER, RETARDO_ANIMACION_SNIPER)
 
     # Aqui vendria la implementacion de la IA segun las posiciones de los jugadores
     # La implementacion de la inteligencia segun este personaje particular

@@ -3,21 +3,20 @@ Zona de exterior (nubes) horizontal larga
 
 Tuto Moverse
 Mini templo con parkour para llave
-Tuto ataque basico (jarron) [referencia a zelda]
+Tuto ataque basico (jarron) [referencia a zelda] Tuto de 2 ataque
 Mini templo parkour + jarrones para encontrar llave
-Tuto cambio personaje 
-Tuto de 2 ataque
+Tuto cambio personaje
 Mini templo 2 ataque + 1 ataque + parkour
 PUZLE DE LUZ -> ZEUS!
 
 Templo de Poseidon
--Una sala vertical con arena que va bajando a medida 
-que completas los subniveles
+Una sala vertical con arena que va bajando a medida que completas los subniveles
+
 Una sala con enemigos, derrotarlos a todos y pulsar boton
 Una sala puzle (tuberias a mi estilo)
 Una sala grande con jarrones (vida) "sala inutil" larga sin nada que hacer
 
-Boss - Telequines
+Boss - Telquines
 
 
 Tartaro
@@ -29,7 +28,7 @@ Puertas correctas aleatorias
 
 SALAS TRAMPA
 
-Sala pequeña con muchos enemigos
+Sala pequeña con muchos enemigos - probabilidad de mini boss Telquines
 Sala vacia sin nada
 Sala vacia con una plataforma que caes al vacio (lava o lo que sea)
 Sala vacia con un jarron

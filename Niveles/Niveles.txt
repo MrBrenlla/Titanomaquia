@@ -1,8 +1,4 @@
 
-AB C D E F G H
-
-
-
        AAAAA      AAAAA      AAAAA      AAAAAAA
        B   B      B   B      B   B      B     B
        B   B      B   B      B   B      B     B
@@ -33,15 +29,14 @@ B F E  GGGGGGGG EGGGB
 BAAAAAAAAAAAAAAAAAAAB
 
 Templo 3
-BAAAAAAAAAAAAAAAAAAAB
-B                   B
-B               DDD B
-BEEE           EEEEEB
-B   E               B
-B    E              B
-B     E             B
-B F    E       DDDD B
-BAAAAAAAAAAAAAAAAAAAB
+BAAAAAAAAAAAAAAB
+B              B
+B H        DDD B
+BEEE       EEEEB
+B    E         B
+B     E        B
+B F    E  DDDD B
+BAAAAAAAAAAAAAAB
 
 
 Templo final

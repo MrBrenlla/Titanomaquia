@@ -33,13 +33,13 @@ class Raqueta(pygame.sprite.Sprite):
 
     def __init__(self, posicion, posicionMarcador):
         # Primero invocamos al constructor de la clase padre
-        pygame.sprite.Sprite.__init__(self);
+        pygame.sprite.Sprite.__init__(self)
         # Cargamos la imagen
-        self.imagen = pygame.image.load("raqueta.png");
+        self.imagen = pygame.image.load("raqueta.png")
         # El rectangulo donde estara la imagen
         self.rect = self.imagen.get_rect()
-        self.rect.centerx = posicion[0];
-        self.rect.centery = posicion[1];
+        self.rect.centerx = posicion[0]
+        self.rect.centery = posicion[1]
         # El resto de atributos
         self.puntos = 0
         self.posicionMarcador = posicionMarcador
@@ -61,7 +61,7 @@ class Raqueta(pygame.sprite.Sprite):
 
     # Dibuja la raqueta
     def dibuja(self, pantalla):
-        pantalla.blit(self.imagen, self.rect);
+        pantalla.blit(self.imagen, self.rect)
 
     # Dibuja el marcador
     def marcador(self, pantalla, color):
@@ -77,15 +77,15 @@ class Pelota(pygame.sprite.Sprite):
 
     def __init__(self, sonidoRaqueta, sonidoPunto):
         # Primero invocamos al constructor de la clase padre
-        pygame.sprite.Sprite.__init__(self);
+        pygame.sprite.Sprite.__init__(self)
         # Cargamos la imagen
-        self.imagen = pygame.image.load('pelota.png');
+        self.imagen = pygame.image.load('pelota.png')
         # El rectangulo donde estara la imagen
         self.rect = self.imagen.get_rect()
-        self.rect.centerx = MaxX/2;
-        self.rect.centery = MaxY/2;
+        self.rect.centerx = MaxX/2
+        self.rect.centery = MaxY/2
         # El resto de atributos
-        self.velocidad = [2, 2];
+        self.velocidad = [2, 2]
         self.sonidoRaqueta = sonidoRaqueta
         self.sonidoPunto = sonidoPunto
 
@@ -97,7 +97,7 @@ class Pelota(pygame.sprite.Sprite):
             # Invertimos la velocidad en el eje X
             self.velocidad[0] = -self.velocidad[0]
             # Reproducimos el sonido de la raqueta
-            self.sonidoRaqueta.play();
+            self.sonidoRaqueta.play()
 
         # Miramos a ver si la pelota está en el límite en el eje X
         if self.rect.left <= 0 or self.rect.right >= MaxX:
@@ -107,13 +107,13 @@ class Pelota(pygame.sprite.Sprite):
             else:
                 jugador1.puntos += 1
             # Reproducimos el sonido de los aplausos
-            self.sonidoPunto.play();
+            self.sonidoPunto.play()
 
             # Realizamos una pausa
             time.sleep(1)
             # Ponemos la pelota en el centro
-            self.rect.centerx = MaxX / 2;
-            self.rect.centery = MaxY / 2;
+            self.rect.centerx = MaxX / 2
+            self.rect.centery = MaxY / 2
             # Invertimos la velocidad en el eje X (para que vaya contra el otro jugador)
             self.velocidad[0] = -self.velocidad[0]
                 
@@ -128,7 +128,7 @@ class Pelota(pygame.sprite.Sprite):
 
     # Dibuja la pelota
     def dibuja(self, pantalla):
-        pantalla.blit(self.imagen, self.rect);
+        pantalla.blit(self.imagen, self.rect)
 
 
     
@@ -142,8 +142,8 @@ def main():
     pygame.init()
 
     # Sonidos del juego (tomados de http://soungle.com/ )
-    sonidoRaqueta = pygame.mixer.Sound('Ping_Pong.wav');
-    sonidoAplausos = pygame.mixer.Sound('Aplausos.wav');
+    sonidoRaqueta = pygame.mixer.Sound('Ping_Pong.wav')
+    sonidoAplausos = pygame.mixer.Sound('Aplausos.wav')
 
     # Creamos ambos jugadores
     jugador1 = Raqueta([50,      MaxY/2], [MaxX/4,   MaxY/8])
@@ -167,7 +167,7 @@ def main():
     pygame.mouse.set_visible(False)
 
     # Imagen de fondo
-    imagenFondo = pygame.image.load('pistaTenis.jpg').convert();
+    imagenFondo = pygame.image.load('pistaTenis.jpg').convert()
 
     # Se muestra el mensaje inicial
     tipoLetra = pygame.font.SysFont('arial', 96)
@@ -240,8 +240,8 @@ def main():
         pantalla.blit( imagenFondo, (0, 0))
 
         # Mostramos los marcadores
-        jugador1.marcador(pantalla, BLANCO);
-        jugador2.marcador(pantalla, BLANCO);
+        jugador1.marcador(pantalla, BLANCO)
+        jugador2.marcador(pantalla, BLANCO)
             
         # Dibujamos cada raqueta
         jugador1.dibuja(pantalla)

@@ -1,0 +1,9 @@
+BAA AAAAAAAAAAAAA AAB
+BG            G     B
+BE     C      E  C  B
+BG G   E E      EEE B
+BEEEE     DEE       B
+BC        D  EG     B
+BE        D   EE    B
+BCFE   C  D      E  B
+BAAAAAAAAAAAAAAAAAAAB

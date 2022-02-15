@@ -67,7 +67,6 @@ class EscenaAnimacion(EscenaPyglet, pyglet.window.Window):
         # Esta si que se crea porque estara desde el principio
         self.tanque.scale = 1.2
         self.tanque.rotation = -4
-        self.tanque.set_position(0,80)
 
 
         # La animacion del humo
