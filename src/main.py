@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # Importar modulos
+from turtle import Screen
 import pygame
-from nivel import *
+from level import *
 from pygame.locals import *
 import sys
 
@@ -14,17 +15,22 @@ if __name__ == '__main__':
     pygame.init()
 
     # Crear la pantalla
-    pantalla = pygame.display.set_mode((1280, 720), 0, 32)
+    screen = pygame.display.set_mode((1280, 720), 0, 32)
 
     # Creamos el objeto reloj para sincronizar el juego
-    reloj = pygame.time.Clock()
+    clock = pygame.time.Clock()
+
+    #Variables globales juego
+    fps = 60
+
+    level = Level()
 
 
     # El bucle de eventos
     while True:
 
         # Sincronizar el juego a 60 fps
-        tiempo_pasado = reloj.tick(60)
+        time = clock.tick(fps)
 
         # Para cada evento, hacemos
         for event in pygame.event.get():
@@ -32,9 +38,21 @@ if __name__ == '__main__':
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == KEYDOWN and event.key == K_SPACE:
-                GeneradorNiveles.genNivel("templo2.txt", pantalla)
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                #futuro menu pausa
+                pygame.quit()
+                sys.exit()
+        
 
+        bgd = GestorRecursos.CargarImagen("Fondo.jpg")
+        screen.blit(bgd, (0, 0))
+        level.currentLevel = 4
+        level.clearLevel(screen)
+        level.loadLevel(screen)
 
+        player = GestorRecursos.CargarImagen("sprite_0.png")
+        screen.blit(player, (0, 464))
+
+        
         pygame.display.update()
 
