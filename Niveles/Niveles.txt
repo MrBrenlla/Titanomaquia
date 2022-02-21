@@ -1,4 +1,7 @@
 
+Zeus
+
+Olimpo
        AAAAA      AAAAA      AAAAA      AAAAAAA
        B   B      B   B      B   B      B     B
        B   B      B   B      B   B      B     B
@@ -7,7 +10,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 
 Templo 1
-BAAAAAAAAAAAAAAAAAAAB
+AAAAAAAAAAAAAAAAAAAAA
 B                   B
 B                 H B
 BC             EEEEEB
@@ -15,10 +18,10 @@ BE           E      B
 B  E    E E         B
 B     E     E       B
 B F E         E  G  B
-BAAAAAAAAAAAAAAAAAAAB
+AAAAAAAAAAAAAAAAAAAAA
 
 Templo 2
-BAAAAAAAAAAAAAAAAAAAB
+AAAAAAAAAAAAAAAAAAAAA
 B                   B
 B              GGGGGB
 BG           G EEEEEB
@@ -26,26 +29,90 @@ BE G    G G  E      B
 B  E  G E E G       B
 B   G E     E   G   B
 B F E  GGGGGGGG EGGGB
-BAAAAAAAAAAAAAAAAAAAB
+AAAAAAAAAAAAAAAAAAAAA
 
 Templo 3
-BAAAAAAAAAAAAAAB
+AAAAAAAAAAAAAAAA
 B              B
 B H        DDD B
 BEEE       EEEEB
 B    E         B
 B     E        B
 B F    E  DDDD B
-BAAAAAAAAAAAAAAB
+AAAAAAAAAAAAAAAA
 
 
 Templo final
-BAA AAAAAAAAAAAAA AAB
+AAA AAAAAAAAAAAAA AAA
 BG            G     B
 BE     C      E  C  B
 BG G   E E      EEE B
-BEEEE     DEE       B
+BEEEE     DEE  E    B
 BC        D  EG     B
 BE        D   EE    B
 BCFE   C  D      E  B
-BAAAAAAAAAAAAAAAAAAAB
+AAAAAAAAAAAAAAAAAAAAA
+
+
+Poseidon
+
+Sala grande inutil 
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+B                                              B
+B                                              B
+B                                              B
+B F               GGGGGGGGG                  D B
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+Sala enemigos
+AAAAAAAAAAAAAAAAAAAAA
+B                   B
+B                   B
+B                   B
+B                   B
+B                   B
+B                   B
+B                   B
+AAAAAAAAAAAAAAAAAAAAA
+
+Puzle
+AAAAAAAAAAAAAAAAAAAAA
+B                   B
+B                   B
+B                   B
+B                   B
+B                   B
+B                   B
+B                   B
+AAAAAAAAAAAAAAAAAAAAA
+
+Sala principal
+AAAAAAAAAA
+B        B
+B        B
+B        B
+BF      FB
+AAAAAAAAAA
+B        B
+B        B
+B        B
+BF      FB
+AAAAAAAAAA
+B        B
+B        B
+B        B
+B       FB
+AAAAAAAAAA
+
+boss
+AAAAAAAAAAAAAAAAAAAAA
+B                   B
+BG                  B
+BEE               EEB
+B   E  G EEE G  E   B
+BEE   EEE   EEE   EEB
+B   E   G F     EG  B
+AAAAAAAAAAAAAAAAAAAAA
+
+
+

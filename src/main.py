@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # Importar modulos
-from turtle import Screen
 import pygame
 from level import *
 from pygame.locals import *
@@ -46,12 +45,14 @@ if __name__ == '__main__':
 
         bgd = GestorRecursos.CargarImagen("Fondo.jpg")
         screen.blit(bgd, (0, 0))
-        level.currentLevel = 4
+        level.currentLevel = 2
         level.clearLevel(screen)
         level.loadLevel(screen)
 
-        player = GestorRecursos.CargarImagen("sprite_0.png")
-        screen.blit(player, (0, 464))
+        player = GestorRecursos.CargarImagen("sprite_0.png", -1)
+        screen.blit(player, (1280-128*3, 84))
+        player = GestorRecursos.CargarImagen("sprite_hera.png", -1)
+        screen.blit(player, (800, 464))
 
         
         pygame.display.update()

@@ -1,4 +1,3 @@
-from turtle import screensize
 import pygame
 from gestorRecursos import *
 
@@ -54,7 +53,7 @@ class Level():
         
 
     def loadLevel(self, screen):
-        self.genNivel(self.levels[self.currentLevel])
+        self.genLevel(self.levels[self.currentLevel])
         self.floor_group.draw(screen)
         self.vase_group.draw(screen)
         self.platform_group.draw(screen)
@@ -67,7 +66,7 @@ class Level():
         self.vase_group.empty()
         self.platform_group.empty()
 
-    def genNivel(self, txt):
+    def genLevel(self, txt):
         #leemos el txt para saber que elemetos colocar
         level = GestorRecursos.CargarNivelTxt(txt)
         level = level.split("\n")
