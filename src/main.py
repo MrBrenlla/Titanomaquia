@@ -5,6 +5,7 @@
 import pygame
 from level import *
 from pygame.locals import *
+from characters import *
 import sys
 
 
@@ -23,13 +24,16 @@ if __name__ == '__main__':
     fps = 60
 
     level = Level()
-
+    player = Hera(100, 592)
+    players = pygame.sprite.Group(player)
 
     # El bucle de eventos
     while True:
 
         # Sincronizar el juego a 60 fps
         time = clock.tick(fps)
+
+        bgd = GestorRecursos.CargarImagen("Fondo.jpg")
 
         # Para cada evento, hacemos
         for event in pygame.event.get():
@@ -41,18 +45,29 @@ if __name__ == '__main__':
                 #futuro menu pausa
                 pygame.quit()
                 sys.exit()
-        
+            if event.type == KEYDOWN and event.key == K_LEFT:
+                level.clearLevel(screen, bgd)
+                level.loaded = False
+                level.currentLevel = (level.currentLevel - 1) % 5
+            if event.type == KEYDOWN and event.key == K_RIGHT:
+                level.clearLevel(screen, bgd)
+                level.loaded = False
+                level.currentLevel = (level.currentLevel + 1) % 5
 
-        bgd = GestorRecursos.CargarImagen("Fondo.jpg")
+
+
         screen.blit(bgd, (0, 0))
-        level.currentLevel = 2
-        level.clearLevel(screen)
+
         level.loadLevel(screen)
 
-        player = GestorRecursos.CargarImagen("sprite_0.png", -1)
-        screen.blit(player, (1280-128*3, 84))
-        player = GestorRecursos.CargarImagen("sprite_hera.png", -1)
-        screen.blit(player, (800, 464))
+
+        # player = GestorRecursos.CargarImagen("sprite_0.png", -1)
+        # screen.blit(player, (1280-128*3, 84))
+        
+        keys = pygame.key.get_pressed()
+        player.move(keys, K_d, K_a)
+        player.update()
+        players.draw(screen)
 
         
         pygame.display.update()

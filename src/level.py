@@ -1,43 +1,7 @@
 import pygame
 from gestorRecursos import *
-
 #objetos del nivel
-class Floor(pygame.sprite.Sprite):
-    "Los Sprites que tendra este juego"
-    # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('SueloOlimpo.png')
-        # El rectangulo donde estara la imagen
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-class Platform(pygame.sprite.Sprite):
-    "Los Sprites que tendra este juego"
-    # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Plataforma.png', -1)
-        # El rectangulo donde estara la imagen
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-class Vase(pygame.sprite.Sprite):
-    "Los Sprites que tendra este juego"
-    # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Jarron.png', -1)
-        # El rectangulo donde estara la imagen
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
+from sprites import *
 
 class Level():
     floor_group = pygame.sprite.Group()
@@ -46,22 +10,26 @@ class Level():
     screenWidth = 1280
     screenHeight = 720
     tileSize = 128
+    loaded = False
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.levels = ["olimpo.txt", "templo1.txt", "templo2.txt", "templo3.txt", "temploZeus.txt"]
         self.currentLevel = 0
         
 
     def loadLevel(self, screen):
-        self.genLevel(self.levels[self.currentLevel])
+        
+        if not(self.loaded):
+            self.genLevel(self.levels[self.currentLevel])
+            self.loaded = True
         self.floor_group.draw(screen)
         self.vase_group.draw(screen)
         self.platform_group.draw(screen)
     
-    def clearLevel(self, screen):
-        self.floor_group.clear(screen, screen)
-        self.vase_group.clear(screen, screen)
-        self.platform_group.clear(screen, screen)
+    def clearLevel(self, screen, bgd):
+        self.floor_group.clear(screen, bgd)
+        self.vase_group.clear(screen, bgd)
+        self.platform_group.clear(screen, bgd)
         self.floor_group.empty()
         self.vase_group.empty()
         self.platform_group.empty()
@@ -77,10 +45,10 @@ class Level():
                 if level[i][j] == "A":
                     floor = Floor((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     self.floor_group.add(floor)
-                if level[i][j] == "E":
+                elif level[i][j] == "E":
                     platform = Platform((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     self.platform_group.add(platform)
-                if level[i][j] == "C" or level[i][j] == "G":
+                elif level[i][j] == "C" or level[i][j] == "G":
                     #orginal vase size is 4 times smaller than grid size
                     vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
                     self.vase_group.add(vase)
