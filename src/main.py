@@ -24,8 +24,7 @@ if __name__ == '__main__':
     fps = 60
 
     level = Level()
-    player = Hera(100, 592)
-    players = pygame.sprite.Group(player)
+    
 
     # El bucle de eventos
     while True:
@@ -57,17 +56,15 @@ if __name__ == '__main__':
 
 
         screen.blit(bgd, (0, 0))
-
-        level.loadLevel(screen)
-
+        if not(level.loaded):
+            level.loadLevel(screen)
+            level.loaded = True
 
         # player = GestorRecursos.CargarImagen("sprite_0.png", -1)
         # screen.blit(player, (1280-128*3, 84))
         
         keys = pygame.key.get_pressed()
-        player.move(keys, K_d, K_a)
-        player.update()
-        players.draw(screen)
+        level.update(screen, keys)
 
         
         pygame.display.update()

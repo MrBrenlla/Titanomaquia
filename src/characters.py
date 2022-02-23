@@ -1,21 +1,19 @@
-from re import M
-from telnetlib import NOP
 import pygame
 from gestorRecursos import *
 from sprites import MySprite
 
 #Clase generica Personaje
 class Character(MySprite):
-    def __init__(self):
-        MySprite.__init__(self)
-        self.pos = (0, 0)
-        self.vel = (3, 3)
-
-#Clase plantilla dioses
-class God(Character):
     def __init__(self, spriteSheet, coords, x, y):
-        Character.__init__(self)
+        MySprite.__init__(self)
         self.pos = (x, y)
+        self.vel = (7, 20)
+        self.velX = 0
+
+        self.jumping = False
+        self.jumpVel = 0
+
+        #cargamos la imagen del spritesheet
         self.sheet = GestorRecursos.CargarImagen(spriteSheet, -1)
         self.sheet = self.sheet.convert_alpha()
 
@@ -45,19 +43,13 @@ class God(Character):
                 cont += 4
 
         #valores iniciales
-        self.rect = pygame.Rect(x, y, self.anims[self.currentAnim][self.frame][2], self.anims[self.currentAnim][self.frame][3])
+        
+        self.rect = pygame.Rect(x, y, 44, self.anims[self.currentAnim][self.frame][3])
         self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
         
         self.updateAnim()
 
 
-
-    def move(self, keys, right, left):
-        if keys[right]:
-            self.rect.x += self.vel[0]
-        if keys[left]:
-            self.rect.x -= self.vel[0]
-    
     def updateAnim(self):
         self.delay -= 1
         # Miramos si ha pasado el retardo para dibujar una nueva postura
@@ -71,10 +63,60 @@ class God(Character):
                 self.frame = len(self.anims[self.frame])-1
             self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
 
-    def update(self):
+    def update(self, static):
         self.updateAnim()
-        self.rect.top = self.pos[1] - self.anims[self.currentAnim][self.frame][3]
-        Character.update(self)
+
+        if self.velX > 0:
+            self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
+        if self.velX < 0:
+            self.image = pygame.transform.flip(self.sheet.subsurface(self.anims[self.currentAnim][self.frame]), 1, 0)
+        
+        self.rect.x += self.velX
+        self.rect.y += self.jumpVel
+
+
+        collider = pygame.sprite.spritecollideany(self, static)
+
+        if (collider != None) and (self.jumpVel>0) and (collider.rect.bottom>self.rect.bottom):
+                # Lo situamos con la parte de abajo un pixel colisionando con la plataforma
+                #  para poder detectar cuando se cae de ella
+                self.rect.bottom =  collider.rect.y
+                # Lo ponemos como quieto
+                # Y estará quieto en el eje y
+                self.jumpVel = 0
+                self.jumping = False
+        if collider == None:
+            self.jumping = True
+        
+        
+        
+    def draw(self, screen):
+        screen.blit(self.image, (self.rect.x - 22, self.rect.y, self.rect.width, self.rect.height))
+        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
+        
+
+#Clase plantilla dioses
+class God(Character):
+    def __init__(self, spriteSheet, coords, x, y):
+        Character.__init__(self, spriteSheet, coords, x, y)
+        
+
+    def move(self, keys, up, right, left):
+        self.velX = 0
+        if keys[right]:
+            self.velX = self.vel[0]
+        if keys[left]:
+            self.velX = -self.vel[0]
+        if keys[up] and not(self.jumping):
+            self.jumpVel = -self.vel[1]
+            self.jumping = True
+        #aplicamos gravedad
+        self.jumpVel += 1
+        #velocidad terminal
+        if self.jumpVel > 15:
+            self.jumpVel = 15
+
+
 
 #Clases de cada dios
 class Zeus(God):

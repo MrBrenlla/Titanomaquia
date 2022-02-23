@@ -3,6 +3,7 @@ from gestorRecursos import *
 
 #Clase platilla mysprite
 class MySprite(pygame.sprite.Sprite):
+    
     pass
 
 class Floor(MySprite):
@@ -29,6 +30,12 @@ class Platform(MySprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.rect.height = 24
+        
+    
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
 
 
 class Vase(MySprite):
