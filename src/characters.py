@@ -9,6 +9,7 @@ class Character(MySprite):
         self.pos = (x, y)
         self.vel = (7, 20)
         self.velX = 0
+        self.displacement = False
 
         self.jumping = False
         self.jumpVel = 0
@@ -63,7 +64,7 @@ class Character(MySprite):
                 self.frame = len(self.anims[self.frame])-1
             self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
 
-    def update(self, static):
+    def update(self, static,level_size, level_displacement):
         self.updateAnim()
 
         if self.velX > 0:
@@ -74,6 +75,17 @@ class Character(MySprite):
         self.rect.x += self.velX
         self.rect.y += self.jumpVel
 
+
+        if (self.rect.x > 590) and level_size>1280 and (level_displacement<(level_size-1280-self.rect.x)  ):
+            
+            self.rect.x -= self.velX
+            self.displacement = True
+        else: 
+            if (self.rect.x < 590 and level_size>1280 and level_displacement>0):
+                self.rect.x -= self.velX
+                self.displacement = True
+            else:    
+                self.displacement = False
 
         collider = pygame.sprite.spritecollideany(self, static)
 
@@ -88,6 +100,7 @@ class Character(MySprite):
         if collider == None:
             self.jumping = True
         
+        return self.velX
         
         
     def draw(self, screen):
@@ -115,6 +128,8 @@ class God(Character):
         #velocidad terminal
         if self.jumpVel > 15:
             self.jumpVel = 15
+
+
 
 
 

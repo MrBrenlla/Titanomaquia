@@ -11,13 +11,17 @@ class Level():
     static_group = pygame.sprite.Group()
     screenWidth = 1280
     screenHeight = 720
+    screenScroll = 0
+    bgScroll = 0
     tileSize = 128
     loaded = False
     
 
     def __init__(self):
         self.levels = ["olimpo.txt", "templo1.txt", "templo2.txt", "templo3.txt", "temploZeus.txt"]
+        self.level_size = [[50,5],[22,9],[10,9]]
         self.currentLevel = 0
+        self.level_displacement = 0
         self.player = Hera(100, 592)
         self.players = pygame.sprite.Group(self.player)
 
@@ -58,12 +62,25 @@ class Level():
     def update(self, screen, keys):
         self.floor_group.draw(screen)
         self.vase_group.draw(screen)
-        for s in self.platform_group.sprites():
-            s.draw(screen)
+        self.platform_group.draw(screen)
 
         self.player.move(keys, K_w, K_d, K_a)
-        self.player.update(self.static_group)
+        
+        self.screenScroll = self.player.update(self.static_group,(self.level_size[0][0]/10)*self.screenWidth, self.level_displacement)
+        
         self.player.draw(screen)
+
+        
+
+    def levelDisplacement(self):
+
+        self.level_displacement += self.screenScroll
+        for s in self.floor_group.sprites():
+            s.displacementSprite(self.screenScroll,0)
+        for s in self.vase_group.sprites():
+            s.displacementSprite(self.screenScroll,0)
+        for s in self.platform_group.sprites():
+            s.displacementSprite(self.screenScroll,0)
         
         
 

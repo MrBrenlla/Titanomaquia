@@ -3,8 +3,10 @@ from gestorRecursos import *
 
 #Clase platilla mysprite
 class MySprite(pygame.sprite.Sprite):
+    def displacementSprite(self,velx,vely):
+        self.rect.x -= velx
+        self.rect.y -= vely
     
-    pass
 
 class Floor(MySprite):
     "Los Sprites que tendra este juego"
@@ -19,6 +21,8 @@ class Floor(MySprite):
         self.rect.y = y
 
 
+
+
 class Platform(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
@@ -31,11 +35,6 @@ class Platform(MySprite):
         self.rect.x = x
         self.rect.y = y
         self.rect.height = 24
-        
-    
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
-        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
 
 
 class Vase(MySprite):
