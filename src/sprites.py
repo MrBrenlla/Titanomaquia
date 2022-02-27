@@ -3,9 +3,9 @@ from gestorRecursos import *
 
 #Clase platilla mysprite
 class MySprite(pygame.sprite.Sprite):
-    def displacementSprite(self,velx,vely):
-        self.rect.x -= velx
-        self.rect.y -= vely
+    def displacementSprite(self,vel):
+        self.rect.x -= vel[0]
+        self.rect.y -= vel[1]
     
 
 class Floor(MySprite):

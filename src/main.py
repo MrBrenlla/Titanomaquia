@@ -66,8 +66,8 @@ if __name__ == '__main__':
         keys = pygame.key.get_pressed()
         level.update(screen, keys)
         #TODO: hacer que el mapa solo se desplace en determinados momentos
-        if (level.player.displacement):
-            level.levelDisplacement()
+       # if (level.player.displacement[0] or level.player.displacement[1]):
+        #    level.levelDisplacement()
         
         pygame.display.update()
 

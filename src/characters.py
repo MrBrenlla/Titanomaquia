@@ -9,7 +9,7 @@ class Character(MySprite):
         self.pos = (x, y)
         self.vel = (7, 20)
         self.velX = 0
-        self.displacement = False
+        self.displacement = [False,False]
 
         self.jumping = False
         self.jumpVel = 0
@@ -64,7 +64,7 @@ class Character(MySprite):
                 self.frame = len(self.anims[self.frame])-1
             self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
 
-    def update(self, static,level_size, level_displacement):
+    def update(self, static):
         self.updateAnim()
 
         if self.velX > 0:
@@ -74,18 +74,6 @@ class Character(MySprite):
         
         self.rect.x += self.velX
         self.rect.y += self.jumpVel
-
-
-        if (self.rect.x > 590) and level_size>1280 and (level_displacement<(level_size-1280-self.rect.x)  ):
-            
-            self.rect.x -= self.velX
-            self.displacement = True
-        else: 
-            if (self.rect.x < 590 and level_size>1280 and level_displacement>0):
-                self.rect.x -= self.velX
-                self.displacement = True
-            else:    
-                self.displacement = False
 
         collider = pygame.sprite.spritecollideany(self, static)
 
@@ -100,9 +88,30 @@ class Character(MySprite):
         if collider == None:
             self.jumping = True
         
-        return self.velX
+    def characterScroll(self, level_size, level_displacement, screenSize):
+
+        level_size_ScrollX = (level_size[0]/10)*screenSize[0]
+        level_size_ScrollY = (level_size[1]/5)*screenSize[1]
+        #print("screenheight: ", screenSize[1])
+        # ScrollX
+        if (self.rect.x > 590 and level_displacement[0]<(level_size_ScrollX-screenSize[0]-self.rect.x) ) or (self.rect.x < 590 and level_displacement[0]>0) and level_size_ScrollX>screenSize[0]:    
+            self.rect.x -= self.velX
+            self.displacement[0] = True
+        else:  
+            self.displacement[0] = False
         
-        
+        # ScrollY
+        #print("sizescrolly: ", level_size_ScrollY)
+        print("self.rect.y: ", self.rect.y)
+        #print("velocidad en y: ", self.jumpVel)
+        if (self.rect.y < 290 and level_displacement[1]<(level_size_ScrollY-screenSize[1]-self.rect.y) ) or (self.rect.y > 290 and level_displacement[1]>0) and level_size_ScrollY>screenSize[1]:
+            #self.rect.y -= self.jumpVel
+            self.displacement[1] = True
+        else:
+            self.displacement[1] = False
+        return [self.velX,self.jumpVel]
+
+
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x - 22, self.rect.y, self.rect.width, self.rect.height))
         # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
