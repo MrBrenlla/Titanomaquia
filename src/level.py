@@ -59,18 +59,26 @@ class Level():
                     vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
                     self.vase_group.add(vase)
 
-    def update(self, screen, keys):
+    def drawScenary(self,screen):
+
         self.floor_group.draw(screen)
         self.vase_group.draw(screen)
         self.platform_group.draw(screen)
+        self.player.draw(screen)
+
+    def update(self, screen, keys):
+
 
         self.player.move(keys, K_w, K_d, K_a)
         
         self.player.update(self.static_group)
         
-        #self.screenScroll = self.player.characterScroll(self.level_size[1], self.level_displacement,[self.screenWidth,self.screenHeight])
+        self.screenScroll = self.player.characterScroll(self.level_size[self.currentLevel], self.level_displacement, [self.screenWidth,self.screenHeight])
 
-        self.player.draw(screen)
+        if (self.player.displacement[0] or self.player.displacement[1]):
+            self.levelDisplacement()        
+
+        self.drawScenary(screen)
 
         
 
