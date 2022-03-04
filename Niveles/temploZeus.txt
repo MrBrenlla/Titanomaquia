@@ -4,6 +4,6 @@ BE     C      E  C  B
 BG G   E E      EEE B
 BEEEE     DEE       B
 BC        D  EG     B
-BE        D   EE    B
-BCFE   C  D      E  B
+BEEE      D   EE    B
+BCFPE  C  D      E  B
 BAAAAAAAAAAAAAAAAAAAB

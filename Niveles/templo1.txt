@@ -1,9 +1,9 @@
 AAAAAAAAAAAAAAAAAAAAA
 B                   B
 B                 H B
-BC             EEEEEB
-BE           E      B
-B  E    E E         B
+BC             EEEEEE
+EE           E      B
+B  E    EEEE        B
 B     E     E       B
-B F E         E  G  B
+B FPE         E  G  E
 AAAAAAAAAAAAAAAAAAAAA
