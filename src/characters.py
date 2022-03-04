@@ -1,6 +1,6 @@
 import pygame
 from gestorRecursos import *
-from sprites import MySprite
+from sprites import *
 
 #Clase generica Personaje
 class Character(MySprite):
@@ -75,43 +75,48 @@ class Character(MySprite):
         self.rect.x += self.velX
         self.rect.y += self.jumpVel
 
-        collider = pygame.sprite.spritecollideany(self, static)
+        #check collisions
+        static_collider = pygame.sprite.spritecollideany(self, static)
 
-        if (collider != None) and (self.jumpVel>0) and (collider.rect.bottom>self.rect.bottom):
+        if (static_collider != None) and (self.jumpVel>0) and (static_collider.rect.bottom>self.rect.bottom):
                 # Lo situamos con la parte de abajo un pixel colisionando con la plataforma
                 #  para poder detectar cuando se cae de ella
-                self.rect.bottom =  collider.rect.y
+                self.rect.bottom =  static_collider.rect.y
                 # Lo ponemos como quieto
                 # Y estará quieto en el eje y
                 self.jumpVel = 0
                 self.jumping = False
-        if collider == None:
+        if static_collider == None:
             self.jumping = True
         
     def characterScroll(self, level_size, level_displacement, screenSize):
 
-        level_size_ScrollX = (level_size[0]/10)*screenSize[0]
-        level_size_ScrollY = (level_size[1]/5)*screenSize[1]
+        level_size_ScrollX = level_size[0] * 128 - 2 
+        level_size_ScrollY = level_size[1] * 128 - 2
         #print("screenheight: ", screenSize[1])
+
+        scrollX = 0
+        scrollY = 0
+
         # ScrollX
-        if (self.rect.x > 590 and level_displacement[0]<(level_size_ScrollX-screenSize[0]-self.rect.x) ) or (self.rect.x < 590 and level_displacement[0]>0) and level_size_ScrollX>screenSize[0]:    
+        if (self.rect.x > 590 and (level_displacement[0]<level_size_ScrollX-screenSize[0])) or (self.rect.x <= 590 and level_displacement[0]>0) and level_size_ScrollX>screenSize[0]:
             self.rect.x -= self.velX
+            scrollX = self.velX
             self.displacement[0] = True
-        else:  
+        else:
             self.displacement[0] = False
-        
+
         # ScrollY
         #print("sizescrolly: ", level_size_ScrollY)
-        print("self.rect.y: ", self.rect.y)
+        # print("self.rect.y: ", self.rect.y)
         #print("velocidad en y: ", self.jumpVel)
-        if (self.rect.y < 290 and level_displacement[1]<(level_size_ScrollY-screenSize[1]-self.rect.y) ) or (self.rect.y > 290 and level_displacement[1]>0) and level_size_ScrollY>screenSize[1]:
+        if (self.rect.y < 260 and level_displacement[1]<(level_size_ScrollY-screenSize[1]) ) or (self.rect.y >= 500 and level_displacement[1]>0) and level_size_ScrollY>screenSize[1]:
             self.rect.y -= self.jumpVel
-            print("self.rect.y 2 aaah: ", self.rect.y)
+            scrollY = self.jumpVel
             self.displacement[1] = True
         else:
             self.displacement[1] = False
-        return [self.velX,self.jumpVel]
-
+        return [scrollX,scrollY]
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x - 22, self.rect.y, self.rect.width, self.rect.height))
@@ -138,6 +143,12 @@ class God(Character):
         #velocidad terminal
         if self.jumpVel > 15:
             self.jumpVel = 15
+
+    def interact(self, keys, interactKey, interactables, level):
+        interact_collider = pygame.sprite.spritecollideany(self, interactables)
+        
+        if (interact_collider != None) and (keys[interactKey]):
+            interact_collider.interact(level)
 
 
 
