@@ -88,38 +88,10 @@ class Character(MySprite):
                 self.jumping = False
         if static_collider == None:
             self.jumping = True
+        #print("self.rect.y: ", self.rect.y)
         
-    def characterScroll(self, level_size, level_displacement, screenSize):
-
-        level_size_ScrollX = level_size[0] * 128 - 2 
-        level_size_ScrollY = level_size[1] * 128 - 2
-        #print("screenheight: ", screenSize[1])
-
-        scrollX = 0
-        scrollY = 0
-
-        # ScrollX
-        if (self.rect.x > 590 and (level_displacement[0]<level_size_ScrollX-screenSize[0])) or (self.rect.x <= 590 and level_displacement[0]>0) and level_size_ScrollX>screenSize[0]:
-            self.rect.x -= self.velX
-            scrollX = self.velX
-            self.displacement[0] = True
-        else:
-            self.displacement[0] = False
-
-        # ScrollY
-        #print("sizescrolly: ", level_size_ScrollY)
-        # print("self.rect.y: ", self.rect.y)
-        #print("velocidad en y: ", self.jumpVel)
-        if (self.rect.y > 290 and level_displacement[1]<(level_size_ScrollY-screenSize[1]-self.rect.y) ) or (self.rect.y < 290 and level_displacement[1]>0) and level_size_ScrollY>screenSize[1]:
-            self.rect.y -= self.jumpVel
-            scrollY = self.jumpVel
-            self.displacement[1] = True
-        else:
-            self.displacement[1] = False
-        return [scrollX,scrollY]
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.rect.x - 22, self.rect.y, self.rect.width, self.rect.height))
+    def draw(self, screen, newScroll):
+        screen.blit(self.image, (self.rect.x -22 -newScroll[0], self.rect.y-newScroll[1], self.rect.width, self.rect.height))
         # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
         
 

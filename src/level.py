@@ -11,8 +11,7 @@ class Level():
     static_group = pygame.sprite.Group()
     interactable_group = pygame.sprite.Group()
     screenWidth = 1280
-    screenHeight = 720
-    screenScroll = [0,0]
+    screenHeight = 640
     bgScroll = 0
     tileSize = 128
     loaded = False
@@ -22,7 +21,6 @@ class Level():
     def __init__(self, screen, bgd):
         self.levels = ["olimpo.txt", "templo1.txt", "templo2.txt", "templo3.txt", "temploZeus.txt"]
         self.level_size = [[49,5],[21,9],[21,9]]
-        self.level_displacement = [0, 0]
         self.screen = screen
         self.bgd = bgd
         
@@ -89,29 +87,27 @@ class Level():
         self.platform_group.draw(screen)
         self.player.draw(screen)
 
-    def update(self, screen, keys):
+    def update(self, screen, keys, newScroll):
 
 
         self.player.move(keys, K_w, K_d, K_a)
         self.player.interact(keys, K_e, self.interactable_group, self)
         self.player.update(self.static_group)
+    
         
-        self.screenScroll = self.player.characterScroll(self.level_size[self.currentLevel], self.level_displacement,[self.screenWidth,self.screenHeight])
-
-        if self.player.displacement[0] or self.player.displacement[1]:
-            self.levelDisplacement()
-        
-        self.static_group.draw(screen)
-        self.interactable_group.draw(screen)
-        self.player.draw(screen)
-
-    def levelDisplacement(self):
-        self.level_displacement[0] += self.screenScroll[0]
-        self.level_displacement[1] -= self.screenScroll[1]
         for s in self.static_group.sprites():
-            s.displacementSprite(self.screenScroll)
+            screen.blit(s.image,(s.rect.x-newScroll[0],s.rect.y-newScroll[1]))
+            
         for s in self.interactable_group.sprites():
-            s.displacementSprite(self.screenScroll)
+            screen.blit(s.image,(s.rect.x-newScroll[0],s.rect.y-newScroll[1]))
+            
+
+        #self.static_group.draw(screen)
+        #self.interactable_group.draw(screen)
+        #display.blit(player_img,(player_rect.x-scroll[0],player_rect.y-scroll[1]))
+        #screen.blit(self.player.sheet,(self.player.rect.x-newScroll[0],self.player.rect.y-newScroll[1]))
+        self.player.draw(screen,newScroll)
+
 
 
         
