@@ -110,7 +110,7 @@ class Character(MySprite):
         #print("sizescrolly: ", level_size_ScrollY)
         # print("self.rect.y: ", self.rect.y)
         #print("velocidad en y: ", self.jumpVel)
-        if (self.rect.y < 260 and level_displacement[1]<(level_size_ScrollY-screenSize[1]) ) or (self.rect.y >= 500 and level_displacement[1]>0) and level_size_ScrollY>screenSize[1]:
+        if (self.rect.y > 290 and level_displacement[1]<(level_size_ScrollY-screenSize[1]-self.rect.y) ) or (self.rect.y < 290 and level_displacement[1]>0) and level_size_ScrollY>screenSize[1]:
             self.rect.y -= self.jumpVel
             scrollY = self.jumpVel
             self.displacement[1] = True
