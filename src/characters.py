@@ -159,8 +159,13 @@ class NoPlayer(Character):
         MySprite.__init__(self)
 
 class NPC(NoPlayer):
-    def __init__(self):
+    def __init__(self, x, y):
         MySprite.__init__(self)
+        self.image = GestorRecursos.CargarImagen('guardia2.png', -1)
+        # El rectangulo donde estara la imagen
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 
 class Enemy(NoPlayer):

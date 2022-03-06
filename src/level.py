@@ -17,6 +17,7 @@ class Level():
     loaded = False
     currentLevel = 0
     lastLevel = 0
+    locked = False
     
 
     def __init__(self, screen):
@@ -45,9 +46,8 @@ class Level():
         #leemos el txt para saber que elemetos colocar
         level = GestorRecursos.CargarNivelTxt(txt)
         level = level.split("\n")
-        self.bgd = Background(0, 0)
-        print(self.bgd)
         l = len(level)
+        self.bgd = Background(0, -(l*self.tileSize-self.screenHeight), self.currentLevel)
         doors = 1
         spawnPos = 0
         for i in range(l):
@@ -89,6 +89,12 @@ class Level():
                 elif level[i][j] == "K":
                     ceil = Ceiling((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 3)
                     self.static_group.add(ceil)
+                elif level[i][j] == "H":
+                    key = Key((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), self)
+                    self.interactable_group.add(key)
+                elif level[i][j] == "D":
+                    npc = NPC((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    self.interactable_group.add(npc)
 
     def drawScenary(self,screen):
         screen.blit(self.bgd.image, (0,0))

@@ -8,10 +8,14 @@ class MySprite(pygame.sprite.Sprite):
     
 
 class Background(MySprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, bgd):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Exterior.png')
+        if bgd == 0:
+            fondo = "Exterior.png"
+        else:
+            fondo = "Fondo.png"
+        self.image = GestorRecursos.CargarImagen(fondo)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -29,6 +33,23 @@ class Floor(MySprite):
         self.rect.x = x
         self.rect.y = y
 
+class Key(MySprite):
+    "Los Sprites que tendra este juego"
+    # Primero invocamos al constructor de la clase padre
+    def __init__(self, x, y, level):
+        MySprite.__init__(self)
+        # Cargamos la imagen
+        self.image = GestorRecursos.CargarImagen('Llave.png', -1)
+        # El rectangulo donde estara la imagen
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        level.locked = True
+
+    def interact(self, level):
+        level.locked = False
+        self.kill()
+
 class Door(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
@@ -44,10 +65,12 @@ class Door(MySprite):
         self.lastLevel = lastLevel
         
     def interact(self, level):
-        level.clearLevel()
-        level.lastLevel = self.lastLevel
-        level.currentLevel = self.level
-        level.loaded = False
+        if not(level.locked):
+            level.clearLevel()
+            level.lastLevel = self.lastLevel
+            level.currentLevel = self.level
+            level.loaded = False
+        
 class Wall(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
