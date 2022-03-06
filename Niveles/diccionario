@@ -1,11 +1,11 @@
 A suelo
-B pared
+B pared --
 C jarron
 D entidad
 E plataforma
 F puerta
 G jarron_miel
 H llave
-I Techo
-J TechoIzquierdo
-K TechoDerecho
+I Techo --
+J TechoIzquierdo --
+K TechoDerecho --

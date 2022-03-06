@@ -7,6 +7,16 @@ class MySprite(pygame.sprite.Sprite):
     pass
     
 
+class Background(MySprite):
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        # Cargamos la imagen
+        self.image = GestorRecursos.CargarImagen('Exterior.png')
+        # El rectangulo donde estara la imagen
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
 class Floor(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
@@ -22,7 +32,7 @@ class Floor(MySprite):
 class Door(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
+    def __init__(self, x, y, level, lastLevel):
         MySprite.__init__(self)
         # Cargamos la imagen
         self.image = GestorRecursos.CargarImagen('door.png', -1)
@@ -30,11 +40,13 @@ class Door(MySprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.level = level
+        self.lastLevel = lastLevel
         
     def interact(self, level):
         level.clearLevel()
-        level.currentLevel = random.randrange(0, 3)
-        print(level.currentLevel)
+        level.lastLevel = self.lastLevel
+        level.currentLevel = self.level
         level.loaded = False
 class Wall(MySprite):
     "Los Sprites que tendra este juego"

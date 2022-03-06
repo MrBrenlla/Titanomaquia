@@ -5,5 +5,5 @@ BC             EEEEEE
 EE           E      B
 B  E    EEEE        B
 B     E     E       B
-B FPE         E  G  E
+B LPE         E  G  E
 AAAAAAAAAAAAAAAAAAAAA

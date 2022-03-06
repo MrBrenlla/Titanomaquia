@@ -22,8 +22,7 @@ if __name__ == '__main__':
 
     #Variables globales juego
     fps = 60
-    bgd = GestorRecursos.CargarImagen("Fondo.jpg")
-    level = Level(screen, bgd)
+    level = Level(screen)
     true_scroll = [0,0]
     
 
@@ -54,7 +53,6 @@ if __name__ == '__main__':
 
 
 
-        screen.blit(bgd, (0, 0))
         if not(level.loaded):
             level.loadLevel()
             level.loaded = True
