@@ -17,12 +17,9 @@ class Level():
     loaded = False
     currentLevel = 0
     lastLevel = 0
-<<<<<<< HEAD
-
-=======
     locked = False
-    
->>>>>>> f2f9700966751da07c1230ecb7a0a2b7e56e72c3
+
+
 
     def __init__(self, screen):
         self.levels = ["olimpo.txt", "templo1.txt", "templo2.txt", "templo3.txt", "temploZeus.txt"]
