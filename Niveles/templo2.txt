@@ -2,8 +2,8 @@ BAAAAAAAAAAAAAAAAAAAB
 B                   B
 B              GGGGGB
 BG           G EEEEEB
-BE G    G G  E      B
-B  E  G E E G       B
+BE G    G GG E      B
+B  E  G E EEG       B
 B   G E     E   G   B
 B LPE  GGGGGGGG EGGGB
 AAAAAAAAAAAAAAAAAAAAA
