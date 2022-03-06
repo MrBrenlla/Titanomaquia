@@ -17,18 +17,18 @@ class Level():
     loaded = False
     currentLevel = 0
     lastLevel = 0
-    
+
 
     def __init__(self, screen):
         self.levels = ["olimpo.txt", "templo1.txt", "templo2.txt", "templo3.txt", "temploZeus.txt"]
         self.level_size = [[49,5],[21,9],[21,9], [16,8], [21, 9]]
         self.screen = screen
-        
-        
+
+
     def loadLevel(self):
         self.genLevel(self.levels[self.currentLevel])
 
-    
+
     def clearLevel(self):
         self.floor_group.clear(self.screen, self.bgd)
         self.vase_group.clear(self.screen, self.bgd)
@@ -39,7 +39,7 @@ class Level():
         self.platform_group.empty()
         self.interactable_group.empty()
         self.static_group.empty()
-        
+
 
     def genLevel(self, txt):
         #leemos el txt para saber que elemetos colocar
@@ -100,25 +100,20 @@ class Level():
     def update(self, screen, keys, newScroll):
 
         self.player.move(keys, K_w, K_d, K_a)
+        self.player.attack(keys, K_SPACE)
         self.player.interact(keys, K_e, self.interactable_group, self)
         self.player.update(self.static_group)
-    
-        
+
+
         screen.blit(self.bgd.image,(self.bgd.rect.x-newScroll[0],self.bgd.rect.y-newScroll[1]))
         for s in self.static_group.sprites():
             screen.blit(s.image,(s.rect.x-newScroll[0],s.rect.y-newScroll[1]))
-            
+
         for s in self.interactable_group.sprites():
             screen.blit(s.image,(s.rect.x-newScroll[0],s.rect.y-newScroll[1]))
-            
+
 
         #self.static_group.draw(screen)
         #self.interactable_group.draw(screen)
 
         self.player.draw(screen,newScroll)
-
-
-
-        
-                    
-        

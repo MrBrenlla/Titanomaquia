@@ -5,7 +5,7 @@ from gestorRecursos import *
 #Clase platilla mysprite
 class MySprite(pygame.sprite.Sprite):
     pass
-    
+
 
 class Background(MySprite):
     def __init__(self, x, y):
@@ -42,7 +42,7 @@ class Door(MySprite):
         self.rect.y = y
         self.level = level
         self.lastLevel = lastLevel
-        
+
     def interact(self, level):
         level.clearLevel()
         level.lastLevel = self.lastLevel
