@@ -76,7 +76,6 @@ if __name__ == '__main__':
         # screen.blit(player, (1280-128*3, 84))
         keys = pygame.key.get_pressed()
         level.update(screen, keys, scroll)
-        #TODO: hacer que el mapa solo se desplace en determinados momentos
         
         pygame.display.update()
 

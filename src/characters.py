@@ -32,11 +32,11 @@ class Character(MySprite):
         self.jumpVel = 0
 
         #cargamos la imagen del spritesheet
-        self.sheet = GestorRecursos.CargarImagen(spriteSheet, -1)
+        self.sheet = GestorRecursos.CargarImagen('Dioses\\' + spriteSheet, -1)
         self.sheet = self.sheet.convert_alpha()
 
         # Leemos las coordenadas de un archivo de texto
-        datos = GestorRecursos.CargarArchivoCoordenadas(coords)
+        datos = GestorRecursos.CargarArchivoCoordenadas('Dioses\\' + coords)
         datos = datos.split()
 
         #Array con el numero de frames de cada animacion
@@ -219,7 +219,7 @@ class NoPlayer(Character):
 class NPC(NoPlayer):
     def __init__(self, x, y):
         MySprite.__init__(self)
-        self.image = GestorRecursos.CargarImagen('guardia2.png', -1)
+        self.image = GestorRecursos.CargarImagen('NPC\\guardia2.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
