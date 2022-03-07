@@ -104,9 +104,21 @@ class Level():
         self.platform_group.draw(screen)
         self.player.draw(screen)
 
+
+    def playerLimits(self):
+
+        levelWidth = self.level_size[self.currentLevel][0]*128
+        
+        if self.player.rect.x < 0:
+            self.player.rect.x = 0
+        if self.player.rect.x > levelWidth - self.player.rect.width:
+            self.player.rect.x = levelWidth - self.player.rect.width
+
     def update(self, screen, keys, newScroll):
 
         self.player.move(keys, K_w, K_d, K_a)
+        self.playerLimits()
+
         self.player.attack(keys, K_SPACE)
         self.player.interact(keys, K_e, self.interactable_group, self)
         self.player.update(self.static_group)

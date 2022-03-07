@@ -67,7 +67,11 @@ if __name__ == '__main__':
         scroll = true_scroll.copy()
         scroll[0] = int(scroll[0])
         scroll[1] = int(scroll[1])
-        #print("scroll: ",scroll)
+
+        if scroll[0] < 0: scroll[0] = 0
+        if scroll[1] > 0: scroll[1] = 0
+
+        # print("scroll: ",scroll)
         # player = GestorRecursos.CargarImagen("sprite_0.png", -1)
         # screen.blit(player, (1280-128*3, 84))
         keys = pygame.key.get_pressed()

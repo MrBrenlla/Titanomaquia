@@ -14,7 +14,7 @@ class Background(MySprite):
         if bgd == 0:
             fondo = "Exterior.png"
         else:
-            fondo = "Fondo.png"
+            fondo = "Templo.png"
         self.image = GestorRecursos.CargarImagen(fondo)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()

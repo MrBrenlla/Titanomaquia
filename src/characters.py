@@ -40,7 +40,7 @@ class Character(MySprite):
         datos = datos.split()
 
         #Array con el numero de frames de cada animacion
-        self.animFrames = [4, 1, 4, 5, 1, 4]
+        self.animFrames = [4, 1, 4, 5, 1, 3]
         #Array con los rects de las animaciones
         self.anims = []
 
@@ -96,7 +96,7 @@ class Character(MySprite):
         if self.velX < 0:
             self.image = pygame.transform.flip(self.sheet.subsurface(self.anims[self.currentAnim][self.frame]), 1, 0)
 
-
+        # self.rect.bottom = self.rect.y
 
 
     def update(self, static):
@@ -110,7 +110,7 @@ class Character(MySprite):
         if (self.jumping):
             self.currentAnim=SPRITE_JUMPING
 
-        elif (self.velX>0 or self.velX<0):
+        elif (self.velX>0 or self.velX<0) and not(self.attacking):
                 self.currentAnim=SPRITE_WALKING
 
         elif (self.velX==0):
@@ -118,7 +118,7 @@ class Character(MySprite):
 
 
         if (self.attacking):
-            if (self.frame==3):
+            if (self.frame==2):
                 self.attacking = False
             else:
                 self.currentAnim=SPRITE_ATTACK
@@ -129,7 +129,7 @@ class Character(MySprite):
         if (static_collider != None) and (self.jumpVel>0) and (static_collider.rect.bottom>self.rect.bottom):
                 # Lo situamos con la parte de abajo un pixel colisionando con la plataforma
                 #  para poder detectar cuando se cae de ella
-                self.rect.bottom =  static_collider.rect.y
+                self.rect.bottom =  static_collider.rect.y                
                 # Lo ponemos como quieto
                 # Y estará quieto en el eje y
                 self.jumpVel = 0
@@ -137,11 +137,13 @@ class Character(MySprite):
         if static_collider == None:
             self.jumping = True
         #print("self.rect.y: ", self.rect.y)
+
+
         self.updateAnim()
 
     def draw(self, screen, newScroll):
-        screen.blit(self.image, (self.rect.x -22 -newScroll[0], self.rect.y-newScroll[1], self.rect.width, self.rect.height))
-        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
+        screen.blit(self.image, (self.rect.x -22 -newScroll[0], self.rect.y-newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
+        pygame.draw.rect(screen, (255, 255, 255), (self.rect.x -newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
 #Clase plantilla dioses

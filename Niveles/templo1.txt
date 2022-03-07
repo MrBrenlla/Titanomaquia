@@ -1,9 +1,9 @@
-AAAAAAAAAAAAAAAAAAAAA
-B                   B
-B                 H B
-BC             EEEEEE
-EE           E      B
-B  E    EEEE        B
-B     E     E       B
-B LPE         E  G  E
+                     
+                     
+                  H  
+ C             EEEEE 
+ E           E       
+   E    EEEE         
+      E     E        
+  LPE         E  G   
 AAAAAAAAAAAAAAAAAAAAA

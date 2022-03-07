@@ -1,8 +1,8 @@
-BAAAAAAAAAAAAAAB
-B              B
-B H        DDD B
-BEEE       EEEEB
-B    E         B
-B     E        B
-B LP   E  DDDD B
+                
+                
+  H        DDD  
+ EEE       EEEE 
+     E          
+      E         
+  LP   E  DDDD  
 AAAAAAAAAAAAAAAA
