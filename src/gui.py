@@ -126,10 +126,10 @@ class GUIScreen():
 
 class InitialScreen(GUIScreen):
     def __init__(self, menu):
-        super().__init__(menu, "fondoMenu.png")
-        playButton = PlayButton(self, "fondo.png", (640, 310))
-        optionsButton = QuitButton(self, "fondo.png", (640, 375))
-        quitButton = QuitButton(self, "fondo.png", (640, 440))
+        super().__init__(menu, "Menu\\fondoMenu.png")
+        playButton = PlayButton(self, "Menu\\fondo.png", (640, 310))
+        optionsButton = QuitButton(self, "Menu\\fondo.png", (640, 375))
+        quitButton = QuitButton(self, "Menu\\fondo.png", (640, 440))
         # playText = PlayText(self)
         # quitText = QuitText(self)
         # titleText = TitleText(self)

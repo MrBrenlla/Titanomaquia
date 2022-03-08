@@ -101,6 +101,10 @@ class Character(MySprite):
         # self.rect.bottom = self.rect.y
 
 
+    def setMeleeRange(self, width, height):
+        self.attackRangeWidth = width
+        self.attackRangeHeight = height
+
     def update(self, static):
 
         
@@ -124,6 +128,13 @@ class Character(MySprite):
 
         if (self.attacking):
             self.currentAnim=SPRITE_ATTACK
+            if self.right:
+                self.attackRect.x = self.rect.x + self.rect.width
+            else:
+                self.attackRect.x = self.rect.x - self.attackRangeWidth
+            self.attackRect.y = self.rect.y
+            self.attackRect.width = self.attackRangeWidth
+            self.attackRect.height = self.attackRangeHeight
             if (self.frame>=4):
                 self.attacking = False
                 self.attackRect = pygame.Rect(0, 0, 0, 0)
@@ -158,9 +169,7 @@ class God(Character):
     def __init__(self, spriteSheet, coords, x, y):
         Character.__init__(self, spriteSheet, coords, x, y)
 
-    def setMeleeRange(self, width, height):
-        self.attackRangeWidth = width
-        self.attackRangeHeight = height
+    
 
     def attack(self, destructable, eventList):
 
@@ -168,13 +177,7 @@ class God(Character):
             if event.type == KEYDOWN and event.key == K_SPACE:
                 if not self.attacking: 
                     self.frame = 0
-                    if self.right:
-                        self.attackRect.x = self.rect.x + self.rect.width
-                    else:
-                        self.attackRect.x = self.rect.x - self.attackRangeWidth
-                    self.attackRect.y = self.rect.y
-                    self.attackRect.width = self.attackRangeWidth
-                    self.attackRect.height = self.attackRangeHeight
+                    
                     self.attacking = True
             #Character.currentAnim=SPRITE_ATTACK
         for obj in destructable:

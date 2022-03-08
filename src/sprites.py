@@ -75,7 +75,7 @@ class Door(MySprite):
         self.closed = True
 
     def openDoor(self):
-        self.image = GestorRecursos.CargarImagen('door.png', -1)
+        self.image = GestorRecursos.CargarImagen('ObjetosComunes\\door.png', -1)
         self.closed = False
 
     def interact(self, level):

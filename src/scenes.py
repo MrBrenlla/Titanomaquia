@@ -147,7 +147,7 @@ class Olympus(Scene):
 
     def genLevel(self, txt, lvl):
         #leemos el txt para saber que elemetos colocar
-        level = GestorRecursos.CargarNivelTxt(txt)
+        level = GestorRecursos.CargarNivelTxt("Olimpo\\" + txt)
         level = level.split("\n")
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl)
