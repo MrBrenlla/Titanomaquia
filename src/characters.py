@@ -40,7 +40,7 @@ class Character(MySprite):
         datos = datos.split()
 
         #Array con el numero de frames de cada animacion
-        self.animFrames = [4, 1, 4, 5, 1, 3]
+        self.animFrames = [4, 1, 4, 5, 1, 5]
         #Array con los rects de las animaciones
         self.anims = []
 
@@ -51,6 +51,7 @@ class Character(MySprite):
         self.delay = 10
         self.frame = 0
         self.currentAnim = SPRITE_IDLE
+        self.right = True
 
         #recorremos el txt para crear los rects de las animaciones y guardarlas en self.anims
         for anim in range(0, len(self.animFrames)):
@@ -63,6 +64,7 @@ class Character(MySprite):
         #valores iniciales
 
         self.rect = pygame.Rect(x, y, 44, self.anims[self.currentAnim][self.frame][3])
+        self.attackRect = pygame.Rect(0, 0, 0, 0)
         self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
 
         self.updateAnim()
@@ -91,9 +93,9 @@ class Character(MySprite):
 
         if (self.frame>=len(self.anims[self.currentAnim])):
             self.frame=0
-        if self.velX > 0:
+        if self.right:
             self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
-        if self.velX < 0:
+        else:
             self.image = pygame.transform.flip(self.sheet.subsurface(self.anims[self.currentAnim][self.frame]), 1, 0)
 
         # self.rect.bottom = self.rect.y
@@ -101,10 +103,13 @@ class Character(MySprite):
 
     def update(self, static):
 
-
+        
         self.rect.x += self.velX
         self.rect.y += self.jumpVel
 
+        self.attackRect.x += self.velX
+        self.attackRect.y = self.rect.y
+        
 
 
         if (self.jumping):
@@ -118,10 +123,11 @@ class Character(MySprite):
 
 
         if (self.attacking):
-            if (self.frame==2):
+            self.currentAnim=SPRITE_ATTACK
+            if (self.frame>=4):
                 self.attacking = False
-            else:
-                self.currentAnim=SPRITE_ATTACK
+                self.attackRect = pygame.Rect(0, 0, 0, 0)
+                
         #check collisions
         static_collider = pygame.sprite.spritecollideany(self, static)
 
@@ -143,7 +149,8 @@ class Character(MySprite):
 
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x -22 -newScroll[0], self.rect.y-newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
-        pygame.draw.rect(screen, (255, 255, 255), (self.rect.x -newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
+        pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
+        pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
 #Clase plantilla dioses
@@ -151,18 +158,39 @@ class God(Character):
     def __init__(self, spriteSheet, coords, x, y):
         Character.__init__(self, spriteSheet, coords, x, y)
 
-    def attack(self,keys,att):
-        if (keys[att]):
-            self.attacking = True
+    def setMeleeRange(self, width, height):
+        self.attackRangeWidth = width
+        self.attackRangeHeight = height
+
+    def attack(self, destructable, eventList):
+
+        for event in eventList:
+            if event.type == KEYDOWN and event.key == K_SPACE:
+                if not self.attacking: 
+                    self.frame = 0
+                    if self.right:
+                        self.attackRect.x = self.rect.x + self.rect.width
+                    else:
+                        self.attackRect.x = self.rect.x - self.attackRangeWidth
+                    self.attackRect.y = self.rect.y
+                    self.attackRect.width = self.attackRangeWidth
+                    self.attackRect.height = self.attackRangeHeight
+                    self.attacking = True
             #Character.currentAnim=SPRITE_ATTACK
+        for obj in destructable:
+            hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
+            if hit:
+                obj.damage()
 
     def move(self, keys, up, right, left):
         self.velX = 0
         if keys[right]:
     #        Character.move(self,RIGHT)
+            self.right = True
             self.velX = self.vel[0]
         if keys[left]:
-    #        Character.move(self,LEFT)
+            self.right = False
+    #       Character.move(self,LEFT)
             self.velX = -self.vel[0]
         if keys[up] and not(self.jumping):
     #        Character.move(self,UP)
@@ -174,12 +202,11 @@ class God(Character):
         if self.jumpVel > 15:
             self.jumpVel = 15
 
-    def interact(self, keys, interactKey, interactables, level):
+    def interact(self, interactables, level):
         interact_collider = pygame.sprite.spritecollideany(self, interactables)
 
-        if (interact_collider != None) and (keys[interactKey]):
+        if (interact_collider != None):
             interact_collider.interact(level)
-
 
 
 
@@ -192,6 +219,7 @@ class Zeus(God):
 class Hera(God):
     def __init__(self, x, y):
         God.__init__(self, "hera.png", "hera.txt", x, y)
+        God.setMeleeRange(self, 55, 60)
 
 
 class Hestia(God):
@@ -217,13 +245,19 @@ class NoPlayer(Character):
         MySprite.__init__(self)
 
 class NPC(NoPlayer):
-    def __init__(self, x, y):
+    def __init__(self, x, y, guard):
         MySprite.__init__(self)
         self.image = GestorRecursos.CargarImagen('guardia2.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.guard = guard
+    
+    def interact(self, level):
+        if (level.screens[level.currentLevel][LEVEL_PROGRESSION] == self.guard) and ((not level.screens[self.guard][DOORS][-1].closed) or self.guard == 0):
+            level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
+            level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
 
 
 class Enemy(NoPlayer):

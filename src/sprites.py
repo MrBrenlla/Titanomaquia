@@ -1,6 +1,14 @@
 import pygame
-import random
 from gestorRecursos import *
+
+STATIC_GROUP = 0
+INTERACTABLE_GROUP = 1
+DESTRUCTABLE_GROUP = 2
+BACKGROUND = 3
+PLAYER_POS = 4
+SCROLL = 5
+DOORS = 6
+LEVEL_PROGRESSION = 7
 
 #Clase platilla mysprite
 class MySprite(pygame.sprite.Sprite):
@@ -47,7 +55,8 @@ class Key(MySprite):
         level.locked = True
 
     def interact(self, level):
-        level.locked = False
+        level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
+        level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
         self.kill()
 
 class Door(MySprite):
@@ -56,20 +65,26 @@ class Door(MySprite):
     def __init__(self, x, y, level, lastLevel):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('door.png', -1)
+        self.image = GestorRecursos.CargarImagen('PortaPechada.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.level = level
         self.lastLevel = lastLevel
+        self.closed = True
+
+    def openDoor(self):
+        self.image = GestorRecursos.CargarImagen('door.png', -1)
+        self.closed = False
 
     def interact(self, level):
-        if not(level.locked):
-            level.clearLevel()
-            level.lastLevel = self.lastLevel
+        if not self.closed:
+            level.changeLevel = True
             level.currentLevel = self.level
-            level.loaded = False
+            level.lastLevel = self.lastLevel
+
+    
         
 class Wall(MySprite):
     "Los Sprites que tendra este juego"
@@ -122,5 +137,5 @@ class Vase(MySprite):
         self.rect.x = x
         self.rect.y = y
 
-    def interact(self, level):
+    def damage(self):
         self.kill()
