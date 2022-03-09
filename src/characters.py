@@ -159,9 +159,9 @@ class Character(MySprite):
         self.updateAnim()
 
     def draw(self, screen, newScroll):
-        screen.blit(self.image, (self.rect.x -22 -newScroll[0], self.rect.y-newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
-        pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
-        pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
+        screen.blit(self.image, (self.rect.x -22 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
+        #pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
+        #pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
 #Clase plantilla dioses
@@ -180,10 +180,13 @@ class God(Character):
                     
                     self.attacking = True
             #Character.currentAnim=SPRITE_ATTACK
+        dropItems = []
         for obj in destructable:
             hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
             if hit:
-                obj.damage()
+                dropItems.append(obj.damage())
+        
+        return dropItems
 
     def move(self, keys, up, right, left):
         self.velX = 0

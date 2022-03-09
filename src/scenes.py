@@ -71,12 +71,16 @@ class Olympus(Scene):
                 self.director.exitGame()
             if event.type == KEYDOWN and event.key == K_e:
                 self.player.interact(self.screens[self.currentLevel][INTERACTABLE_GROUP], self)
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                self.director.stackScene(MenuPause(self.director))
+            
 
         keys = pygame.key.get_pressed()
         #Acciones posibles del player
         self.player.move(keys, K_w, K_d, K_a)
-        self.player.attack(self.screens[self.currentLevel][DESTRUCTABLE_GROUP], eventList)
-        
+        dropItems = self.player.attack(self.screens[self.currentLevel][DESTRUCTABLE_GROUP], eventList)
+        for item in dropItems:
+            self.screens[self.currentLevel][INTERACTABLE_GROUP].add(item)
 
 
     def updateScroll(self):
@@ -108,9 +112,10 @@ class Olympus(Scene):
             self.player.rect.x = levelWidth - self.player.rect.width
 
     def update(self, time):
-        self.playerLimits()
         self.updateScroll()
+        self.playerLimits()
         self.player.update(self.screens[self.currentLevel][STATIC_GROUP])
+        
 
 
     def clearScreen(self, screen):
@@ -122,13 +127,7 @@ class Olympus(Scene):
 
         if self.changeLevel:
             self.clearScreen(screen)
-            #Posicionar al jugador segun la posicion correcta en el nivel y actualizar la del nivel anterior
-            self.screens[self.lastLevel][PLAYER_POS] = (self.player.rect.x, self.player.rect.y)
-            self.player.rect.x = self.screens[self.currentLevel][PLAYER_POS][0]
-            self.player.rect.y = self.screens[self.currentLevel][PLAYER_POS][1]
             
-
-
             self.changeLevel = False
         
         screen.blit(self.screens[self.currentLevel][BACKGROUND].image, (self.screens[self.currentLevel][BACKGROUND].rect.x-self.scroll[0],self.screens[self.currentLevel][BACKGROUND].rect.y-self.scroll[1]))
@@ -174,9 +173,19 @@ class Olympus(Scene):
                     platform = Platform((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     # platformGroup.add(platform)
                     staticGroup.add(platform)
-                elif level[i][j] == "C" or level[i][j] == "G":
+                elif level[i][j] == "C": #Vasija que contiene llave
+                    #orginal vase size is 4 times smaller than grid size 
+                    vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), 2)
+                    # vaseGroup.add(vase)
+                    destructableGroup.add(vase)
+                elif level[i][j] == "G": #Vasija que contiene nada
                     #orginal vase size is 4 times smaller than grid size
-                    vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
+                    vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), 0)
+                    # vaseGroup.add(vase)
+                    destructableGroup.add(vase)
+                elif level[i][j] == "B": #Vasija que contiene hidromiel
+                    #orginal vase size is 4 times smaller than grid size
+                    vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), 1)
                     # vaseGroup.add(vase)
                     destructableGroup.add(vase)
                 elif level[i][j] == "F":
@@ -191,17 +200,8 @@ class Olympus(Scene):
                 elif level[i][j] == "B":
                     wall = Wall((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(wall)
-                elif level[i][j] == "I":
-                    ceil = Ceiling((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 1)
-                    staticGroup.add(ceil)
-                elif level[i][j] == "J":
-                    ceil = Ceiling((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 2)
-                    staticGroup.add(ceil)
-                elif level[i][j] == "K":
-                    ceil = Ceiling((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 3)
-                    staticGroup.add(ceil)
                 elif level[i][j] == "H":
-                    key = Key((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), self)
+                    key = Key((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(key)
                 elif level[i][j] == "D":
                     npc = NPC((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), guard)
@@ -218,6 +218,7 @@ class Menu(Scene):
 
         self.screens = []
         self.screens.append(InitialScreen(self))
+        #self.screens.append(OptionsScreen(self))
         self.showScreen()
 
     def update(self, *args):
@@ -247,3 +248,36 @@ class Menu(Scene):
     # def mostrarPantallaConfiguracion(self):
     # self.pantallaActual = ...
 
+class MenuPause(Scene):
+    def __init__(self, director):
+        super().__init__(director)
+
+        self.screens = []
+        self.screens.append(PauseScreen(self))
+        self.showScreen()
+
+    def update(self, *args):
+        return
+
+    def events(self, eventList):
+        for event in eventList:
+            #Comprobar si se quiere salir
+            if event.type == pygame.QUIT:
+                self.director.exitGame()
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                self.resumeGame()
+        
+        self.screens[self.currentScreen].events(eventList)
+
+    def draw(self, screen):
+        self.screens[self.currentScreen].draw(screen)
+
+
+    def exitGame(self):
+        self.director.exitGame()
+
+    def resumeGame(self):
+        self.director.exitScene()
+
+    def showScreen(self):
+        self.currentScreen = 0

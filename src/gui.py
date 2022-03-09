@@ -46,6 +46,13 @@ class PlayButton(GUIButton):
     def action(self):
         self.screen.menu.playGame()
 
+class ContinueButton(GUIButton):
+    def __init__(self, screen, image, position):
+        super().__init__(screen, image, position)
+
+    def action(self):
+        self.screen.menu.resumeGame()
+
 class QuitButton(GUIButton):
     def __init__(self, screen, image, position):
         super().__init__(screen, image, position)
@@ -93,9 +100,9 @@ class GUIText(GUIElement):
 
     
 class GUIScreen():
-    def __init__(self, menu, image):
+    def __init__(self, menu, image, colorKey):
         self.menu = menu
-        self.image = GestorRecursos.CargarImagen(image)
+        self.image = GestorRecursos.CargarImagen(image, colorKey)
         self.image = pygame.transform.scale(self.image, (1280, 640))
         self.GUIElements = []
 
@@ -126,17 +133,26 @@ class GUIScreen():
 
 class InitialScreen(GUIScreen):
     def __init__(self, menu):
-        super().__init__(menu, "Menu\\fondoMenu.png")
+        super().__init__(menu, "Menu\\fondoMenu.png", None)
         playButton = PlayButton(self, "Menu\\fondo.png", (640, 310))
         optionsButton = QuitButton(self, "Menu\\fondo.png", (640, 375))
         quitButton = QuitButton(self, "Menu\\fondo.png", (640, 440))
-        # playText = PlayText(self)
-        # quitText = QuitText(self)
-        # titleText = TitleText(self)
+
         
         self.GUIElements.append(playButton)
         self.GUIElements.append(optionsButton)
         self.GUIElements.append(quitButton)
-        # self.GUIElements.append(playText)
-        # self.GUIElements.append(quitText)
-        # self.GUIElements.append(titleText)
+
+
+
+class PauseScreen(GUIScreen):
+    def __init__(self, menu):
+        super().__init__(menu, "Menu\\fondoMenuPausa4.png", None)
+        continueButton = ContinueButton(self, "Menu\\fondo.png", (120, 285))
+        optionsButton = QuitButton(self, "Menu\\fondo.png", (120, 350))
+        quitButton = QuitButton(self, "Menu\\fondo.png", (120, 415))
+
+        
+        self.GUIElements.append(continueButton)
+        self.GUIElements.append(optionsButton)
+        self.GUIElements.append(quitButton)

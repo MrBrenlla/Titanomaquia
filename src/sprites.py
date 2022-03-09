@@ -44,7 +44,7 @@ class Floor(MySprite):
 class Key(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y, level):
+    def __init__(self, x, y):
         MySprite.__init__(self)
         # Cargamos la imagen
         self.image = GestorRecursos.CargarImagen('Olimpo\\Llave.png', -1)
@@ -52,7 +52,6 @@ class Key(MySprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        level.locked = True
 
     def interact(self, level):
         level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
@@ -83,6 +82,12 @@ class Door(MySprite):
             level.changeLevel = True
             level.currentLevel = self.level
             level.lastLevel = self.lastLevel
+            #Posicionar al jugador segun la posicion correcta en el nivel y actualizar la del nivel anterior
+            level.screens[level.lastLevel][PLAYER_POS] = (self.rect.x, self.rect.y + 128)
+            # print(self.player.rect.x, self.player.rect.y)
+            level.player.rect.x = level.screens[level.currentLevel][PLAYER_POS][0]
+            level.player.rect.y = level.screens[level.currentLevel][PLAYER_POS][1]
+            
 
     
         
@@ -128,7 +133,7 @@ class Platform(MySprite):
 class Vase(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
+    def __init__(self, x, y, item):
         MySprite.__init__(self)
         # Cargamos la imagen
         self.image = GestorRecursos.CargarImagen('Olimpo\\Jarron.png', -1)
@@ -136,6 +141,24 @@ class Vase(MySprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.item = item
 
     def damage(self):
         self.kill()
+        if self.item == 1:
+            return Mead(self.rect.x, self.rect.y)
+        if self.item == 2:
+            return Key(self.rect.x, self.rect.y)
+        return []
+
+class Mead(MySprite):
+    "Los Sprites que tendra este juego"
+    # Primero invocamos al constructor de la clase padre
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        # Cargamos la imagen
+        self.image = GestorRecursos.CargarImagen('ObjetosComunes\\HidromielOlimpo.png', -1)
+        # El rectangulo donde estara la imagen
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
