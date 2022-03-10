@@ -20,9 +20,9 @@ class Background(MySprite):
         MySprite.__init__(self)
         # Cargamos la imagen
         if bgd == 0:
-            fondo = "Olimpo\\Exterior.png"
+            fondo = "Olimpo/Exterior.png"
         else:
-            fondo = "Olimpo\\Templo.png"
+            fondo = "Olimpo/Templo.png"
         self.image = GestorRecursos.CargarImagen(fondo)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
@@ -35,7 +35,7 @@ class Floor(MySprite):
     def __init__(self, x, y):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo\\SueloOlimpo.png')
+        self.image = GestorRecursos.CargarImagen('Olimpo/SueloOlimpo.png')
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -47,7 +47,7 @@ class Key(MySprite):
     def __init__(self, x, y):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo\\Llave.png', -1)
+        self.image = GestorRecursos.CargarImagen('Olimpo/Llave.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -64,7 +64,7 @@ class Door(MySprite):
     def __init__(self, x, y, level, lastLevel):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('ObjetosComunes\\PortaPechada.png', -1)
+        self.image = GestorRecursos.CargarImagen('ObjetosComunes/PortaPechada.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -74,7 +74,7 @@ class Door(MySprite):
         self.closed = True
 
     def openDoor(self):
-        self.image = GestorRecursos.CargarImagen('ObjetosComunes\\door.png', -1)
+        self.image = GestorRecursos.CargarImagen('ObjetosComunes/door.png', -1)
         self.closed = False
 
     def interact(self, level):
@@ -87,17 +87,17 @@ class Door(MySprite):
             # print(self.player.rect.x, self.player.rect.y)
             level.player.rect.x = level.screens[level.currentLevel][PLAYER_POS][0]
             level.player.rect.y = level.screens[level.currentLevel][PLAYER_POS][1]
-            
 
-    
-        
+
+
+
 class Wall(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
     def __init__(self, x, y):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo\\Wall.png', -1)
+        self.image = GestorRecursos.CargarImagen('Olimpo/Wall.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -110,7 +110,7 @@ class Ceiling(MySprite):
     def __init__(self, x, y, type):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen(f'Olimpo\\techo{type}.png', -1)
+        self.image = GestorRecursos.CargarImagen(f'Olimpo/techo{type}.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -122,7 +122,7 @@ class Platform(MySprite):
     def __init__(self, x, y):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo\\Plataforma.png', -1)
+        self.image = GestorRecursos.CargarImagen('Olimpo/Plataforma.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -136,7 +136,7 @@ class Vase(MySprite):
     def __init__(self, x, y, item):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo\\Jarron.png', -1)
+        self.image = GestorRecursos.CargarImagen('Olimpo/Jarron.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -157,7 +157,7 @@ class Mead(MySprite):
     def __init__(self, x, y):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('ObjetosComunes\\HidromielOlimpo.png', -1)
+        self.image = GestorRecursos.CargarImagen('ObjetosComunes/HidromielOlimpo.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x

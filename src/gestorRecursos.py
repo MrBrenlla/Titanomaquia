@@ -11,7 +11,7 @@ from pygame.locals import *
 # En este caso se implementa como una clase vacía, solo con métodos de clase
 class GestorRecursos(object):
     recursos = {}
-            
+
     @classmethod
     def CargarImagen(cls, nombre, colorkey=None):
         # Si el nombre de archivo está entre los recursos ya cargados
@@ -25,7 +25,7 @@ class GestorRecursos(object):
             try:
                 imagen = pygame.image.load(fullname)
             except pygame.error:
-                print ('Cannot load image:', fullname)
+                print ('Cannot load sound:', fullname)
                 raise (SystemExit, message)
             imagen = imagen.convert()
             if colorkey is not None:
@@ -72,4 +72,25 @@ class GestorRecursos(object):
             cls.recursos[nombre] = datos
             # Se devuelve
             return datos
-    
+
+    @classmethod
+    def CargarSonido(cls, nombre, esMusica):
+     #Si el nombre de archivo está entre los recursos ya cargados
+        if nombre in cls.recursos:
+            # Se devuelve ese recurso
+            return cls.recursos[nombre]
+        # Si no ha sido cargado anteriormente
+        else:
+            try:
+                if (esMusica):
+                    sonido = pygame.mixer.music.load("Sonidos/" + nombre)
+                    pygame.mixer.music.play()
+                else:
+                    sonido = pygame.mixer.Sound("Sonidos/" + nombre)
+            except pygame.error:
+                print ('Cannot load sound:', nombre)
+                raise (SystemExit, message)
+            # Se almacena
+            cls.recursos[nombre] = sonido
+            # Se devuelve
+            return sonido

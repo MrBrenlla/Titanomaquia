@@ -32,11 +32,11 @@ class Character(MySprite):
         self.jumpVel = 0
 
         #cargamos la imagen del spritesheet
-        self.sheet = GestorRecursos.CargarImagen('Dioses\\' + spriteSheet, -1)
+        self.sheet = GestorRecursos.CargarImagen('Dioses/' + spriteSheet, -1)
         self.sheet = self.sheet.convert_alpha()
 
         # Leemos las coordenadas de un archivo de texto
-        datos = GestorRecursos.CargarArchivoCoordenadas('Dioses\\' + coords)
+        datos = GestorRecursos.CargarArchivoCoordenadas('Dioses/' + coords)
         datos = datos.split()
 
         #Array con el numero de frames de cada animacion
@@ -107,13 +107,13 @@ class Character(MySprite):
 
     def update(self, static):
 
-        
+
         self.rect.x += self.velX
         self.rect.y += self.jumpVel
 
         self.attackRect.x += self.velX
         self.attackRect.y = self.rect.y
-        
+
 
 
         if (self.jumping):
@@ -138,7 +138,7 @@ class Character(MySprite):
             if (self.frame>=4):
                 self.attacking = False
                 self.attackRect = pygame.Rect(0, 0, 0, 0)
-                
+
         #check collisions
         static_collider = pygame.sprite.spritecollideany(self, static)
 
@@ -146,7 +146,7 @@ class Character(MySprite):
         if (static_collider != None) and (self.jumpVel>0) and (static_collider.rect.bottom>self.rect.bottom):
                 # Lo situamos con la parte de abajo un pixel colisionando con la plataforma
                 #  para poder detectar cuando se cae de ella
-                self.rect.bottom =  static_collider.rect.y                
+                self.rect.bottom =  static_collider.rect.y
                 # Lo ponemos como quieto
                 # Y estará quieto en el eje y
                 self.jumpVel = 0
@@ -169,15 +169,15 @@ class God(Character):
     def __init__(self, spriteSheet, coords, x, y):
         Character.__init__(self, spriteSheet, coords, x, y)
 
-    
+
 
     def attack(self, destructable, eventList):
 
         for event in eventList:
             if event.type == KEYDOWN and event.key == K_SPACE:
-                if not self.attacking: 
+                if not self.attacking:
                     self.frame = 0
-                    
+
                     self.attacking = True
             #Character.currentAnim=SPRITE_ATTACK
         dropItems = []
@@ -185,7 +185,7 @@ class God(Character):
             hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
             if hit:
                 dropItems.append(obj.damage())
-        
+
         return dropItems
 
     def move(self, keys, up, right, left):
@@ -253,13 +253,13 @@ class NoPlayer(Character):
 class NPC(NoPlayer):
     def __init__(self, x, y, guard):
         MySprite.__init__(self)
-        self.image = GestorRecursos.CargarImagen('NPC\\guardia2.png', -1)
+        self.image = GestorRecursos.CargarImagen('NPC/guardia2.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.guard = guard
-    
+
     def interact(self, level):
         if (level.screens[level.currentLevel][LEVEL_PROGRESSION] == self.guard) and ((not level.screens[self.guard][DOORS][-1].closed) or self.guard == 0):
             level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()

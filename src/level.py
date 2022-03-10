@@ -45,7 +45,8 @@ class Level():
 
     def genLevel(self, txt):
         #leemos el txt para saber que elemetos colocar
-        level = GestorRecursos.CargarNivelTxt("Olimpo\\" + txt)
+
+        level = GestorRecursos.CargarNivelTxt("Olimpo/" + txt)
         level = level.split("\n")
         l = len(level)
         self.bgd = Background(0, -(l*self.tileSize-self.screenHeight), self.currentLevel)
@@ -108,7 +109,7 @@ class Level():
     def playerLimits(self):
 
         levelWidth = self.level_size[self.currentLevel][0]*128
-        
+
         if self.player.rect.x < 0:
             self.player.rect.x = 0
         if self.player.rect.x > levelWidth - self.player.rect.width:

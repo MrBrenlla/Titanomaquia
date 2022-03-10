@@ -14,7 +14,7 @@ class GUIElement():
 
     def inElementPosition(self, position):
         (posX, posY) = position
-        
+
         if (posX >= self.rect.left) and (posX <= self.rect.right) and (posY <= self.rect.bottom) and (posY >= self.rect.top):
             return True
         else:
@@ -44,6 +44,7 @@ class PlayButton(GUIButton):
         super().__init__(screen, image, position)
 
     def action(self):
+        pygame.mixer.music.stop()
         self.screen.menu.playGame()
 
 class ContinueButton(GUIButton):
@@ -52,6 +53,7 @@ class ContinueButton(GUIButton):
 
     def action(self):
         self.screen.menu.resumeGame()
+        pygame.mixer.music.stop()
 
 class QuitButton(GUIButton):
     def __init__(self, screen, image, position):
@@ -93,12 +95,12 @@ class GUIText(GUIElement):
 #     def __init__(self, screen):
 #         font = pygame.font.SysFont('supermario256', 140)
 #         super().__init__(screen, font, (255, 255, 255), "TITANOMAQUIA", (50, 200))
-    
+
 #     def action(self):
 #         return
 
 
-    
+
 class GUIScreen():
     def __init__(self, menu, image, colorKey):
         self.menu = menu
@@ -107,9 +109,9 @@ class GUIScreen():
         self.GUIElements = []
 
         #lista de elementos gui
-        
+
     def events(self, eventList):
-        
+
         for event in eventList:
             if event.type == MOUSEBUTTONDOWN:
                 self.elementClick = None
@@ -133,12 +135,14 @@ class GUIScreen():
 
 class InitialScreen(GUIScreen):
     def __init__(self, menu):
-        super().__init__(menu, "Menu\\fondoMenu.png", None)
-        playButton = PlayButton(self, "Menu\\fondo.png", (640, 310))
-        optionsButton = QuitButton(self, "Menu\\fondo.png", (640, 375))
-        quitButton = QuitButton(self, "Menu\\fondo.png", (640, 440))
+        super().__init__(menu, "Menu/fondoMenu.png", None)
+        playButton = PlayButton(self, "Menu/fondo.png", (640, 310))
+        optionsButton = QuitButton(self, "Menu/fondo.png", (640, 375))
+        quitButton = QuitButton(self, "Menu/fondo.png", (640, 440))
+        sound = GestorRecursos.CargarSonido("Main_Menu.mp3",True)
 
-        
+
+
         self.GUIElements.append(playButton)
         self.GUIElements.append(optionsButton)
         self.GUIElements.append(quitButton)
@@ -147,12 +151,12 @@ class InitialScreen(GUIScreen):
 
 class PauseScreen(GUIScreen):
     def __init__(self, menu):
-        super().__init__(menu, "Menu\\fondoMenuPausa4.png", None)
-        continueButton = ContinueButton(self, "Menu\\fondo.png", (120, 285))
-        optionsButton = QuitButton(self, "Menu\\fondo.png", (120, 350))
-        quitButton = QuitButton(self, "Menu\\fondo.png", (120, 415))
+        super().__init__(menu, "Menu/fondoMenuPausa4.png", None)
+        continueButton = ContinueButton(self, "Menu/fondo.png", (120, 285))
+        optionsButton = QuitButton(self, "Menu/fondo.png", (120, 350))
+        quitButton = QuitButton(self, "Menu/fondo.png", (120, 415))
 
-        
+
         self.GUIElements.append(continueButton)
         self.GUIElements.append(optionsButton)
         self.GUIElements.append(quitButton)

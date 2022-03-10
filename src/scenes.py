@@ -53,14 +53,14 @@ class Olympus(Scene):
         self.currentLevel = 0
         self.lastLevel = 0
 
-        
+
 
         #grupos
 
         for level in range(len(self.levels)):
             # print(level)
             self.screens.append(self.genLevel(self.levels[level], level))
-        
+
         self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
 
 
@@ -73,7 +73,7 @@ class Olympus(Scene):
                 self.player.interact(self.screens[self.currentLevel][INTERACTABLE_GROUP], self)
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.director.stackScene(MenuPause(self.director))
-            
+
 
         keys = pygame.key.get_pressed()
         #Acciones posibles del player
@@ -87,13 +87,13 @@ class Olympus(Scene):
         #Usamos true scroll para hacer los calculos exactos del scroll
         #El scroll es propio de cada pantalla para mantener los valores anteriores al cambiar entre ellas
         trueScroll = self.screens[self.currentLevel][SCROLL]
-        
+
         if( (((self.player.rect.x-trueScroll[0]-640)/10)>=0 or trueScroll[0]>0) and ((trueScroll[0]<(self.levelSize[self.currentLevel][0]*128-1280-4)) or ((self.player.rect.x-trueScroll[0]-640)/10)<=0 )):
             self.screens[self.currentLevel][SCROLL][0] += (self.player.rect.x-trueScroll[0]-640)/10
 
         if ( ((trueScroll[1]>(self.levelSize[self.currentLevel][1]*(-128)+640+4)) or (((self.player.rect.y-trueScroll[1]-200)/10)>=0)) and (((self.player.rect.y-trueScroll[1]-200)/10)<=0 or trueScroll[1]<0) ):
-            self.screens[self.currentLevel][SCROLL][1] += (self.player.rect.y-trueScroll[1]-200)/10   
-        
+            self.screens[self.currentLevel][SCROLL][1] += (self.player.rect.y-trueScroll[1]-200)/10
+
         #Copiamos los valores de true scroll y los convertimos a int para mayor fluidez
         self.scroll = self.screens[self.currentLevel][SCROLL].copy()
         self.scroll[0] = int(self.scroll[0])
@@ -101,11 +101,11 @@ class Olympus(Scene):
         #Comprobamos que la camara no se salga de los limites del mapa
         if self.scroll[0] < 0: self.scroll[0] = 0
         if self.scroll[1] > 0: self.scroll[1] = 0
-        
+
     def playerLimits(self):
 
         levelWidth = self.levelSize[self.currentLevel][0]*128
-        
+
         if self.player.rect.x < 0:
             self.player.rect.x = 0
         if self.player.rect.x > levelWidth - self.player.rect.width:
@@ -115,7 +115,7 @@ class Olympus(Scene):
         self.updateScroll()
         self.playerLimits()
         self.player.update(self.screens[self.currentLevel][STATIC_GROUP])
-        
+
 
 
     def clearScreen(self, screen):
@@ -127,9 +127,9 @@ class Olympus(Scene):
 
         if self.changeLevel:
             self.clearScreen(screen)
-            
+
             self.changeLevel = False
-        
+
         screen.blit(self.screens[self.currentLevel][BACKGROUND].image, (self.screens[self.currentLevel][BACKGROUND].rect.x-self.scroll[0],self.screens[self.currentLevel][BACKGROUND].rect.y-self.scroll[1]))
 
         for s in self.screens[self.currentLevel][STATIC_GROUP].sprites():
@@ -137,17 +137,18 @@ class Olympus(Scene):
 
         for s in self.screens[self.currentLevel][INTERACTABLE_GROUP].sprites():
             screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-        
+
         for s in self.screens[self.currentLevel][DESTRUCTABLE_GROUP].sprites():
             screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
 
         self.player.draw(screen, self.scroll)
-    
+
 
     def genLevel(self, txt, lvl):
         #leemos el txt para saber que elemetos colocar
-        level = GestorRecursos.CargarNivelTxt("Olimpo\\" + txt)
+        level = GestorRecursos.CargarNivelTxt("Olimpo/" + txt)
         level = level.split("\n")
+        sound = GestorRecursos.CargarSonido("Musica_Olimpo.mp3",True)
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl)
         # print(bgd.rect)
@@ -174,7 +175,7 @@ class Olympus(Scene):
                     # platformGroup.add(platform)
                     staticGroup.add(platform)
                 elif level[i][j] == "C": #Vasija que contiene llave
-                    #orginal vase size is 4 times smaller than grid size 
+                    #orginal vase size is 4 times smaller than grid size
                     vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), 2)
                     # vaseGroup.add(vase)
                     destructableGroup.add(vase)
@@ -229,7 +230,7 @@ class Menu(Scene):
             #Comprobar si se quiere salir
             if event.type == pygame.QUIT:
                 self.director.exitGame()
-        
+
         self.screens[self.currentScreen].events(eventList)
 
     def draw(self, screen):
@@ -266,7 +267,7 @@ class MenuPause(Scene):
                 self.director.exitGame()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.resumeGame()
-        
+
         self.screens[self.currentScreen].events(eventList)
 
     def draw(self, screen):
