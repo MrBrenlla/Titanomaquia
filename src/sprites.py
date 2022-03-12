@@ -10,7 +10,7 @@ SCROLL = 5
 DOORS = 6
 LEVEL_PROGRESSION = 7
 
-#Clase platilla mysprite
+#Clase plantilla mysprite
 class MySprite(pygame.sprite.Sprite):
     pass
 
@@ -54,6 +54,7 @@ class Key(MySprite):
         self.rect.y = y
 
     def interact(self, level):
+        GestorRecursos.CargarSonido("Comunes/coger_llaves.mp3",False).play()
         level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
         level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
         self.kill()
@@ -144,6 +145,9 @@ class Vase(MySprite):
         self.item = item
 
     def damage(self):
+        vase_sound = GestorRecursos.CargarSonido("Comunes/vasija_rompiendose.mp3",False)
+        vase_sound.set_volume(0.02)
+        vase_sound.play()
         self.kill()
         if self.item == 1:
             return Mead(self.rect.x, self.rect.y)
@@ -162,3 +166,9 @@ class Mead(MySprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def interact(self, level):
+        vase_sound = GestorRecursos.CargarSonido("Comunes/beber_hidromiel.mp3",False)
+        vase_sound.set_volume(0.2)
+        vase_sound.play()
+        self.kill()

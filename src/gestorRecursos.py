@@ -83,14 +83,15 @@ class GestorRecursos(object):
         else:
             try:
                 if (esMusica):
-                    sonido = pygame.mixer.music.load("Sonidos/" + nombre)
+                    sound = pygame.mixer.music.load("Musica/" + nombre)
+                    pygame.mixer.music.set_volume(0.05)
                     pygame.mixer.music.play()
                 else:
-                    sonido = pygame.mixer.Sound("Sonidos/" + nombre)
+                    sound = pygame.mixer.Sound("Sonidos/" + nombre)
             except pygame.error:
                 print ('Cannot load sound:', nombre)
                 raise (SystemExit, message)
             # Se almacena
-            cls.recursos[nombre] = sonido
+            cls.recursos[nombre] = sound
             # Se devuelve
-            return sonido
+            return sound

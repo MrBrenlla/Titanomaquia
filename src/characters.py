@@ -168,7 +168,7 @@ class Character(MySprite):
 class God(Character):
     def __init__(self, spriteSheet, coords, x, y):
         Character.__init__(self, spriteSheet, coords, x, y)
-
+        self.name=""
 
 
     def attack(self, destructable, eventList):
@@ -176,10 +176,15 @@ class God(Character):
         for event in eventList:
             if event.type == KEYDOWN and event.key == K_SPACE:
                 if not self.attacking:
+                    #son_attak = GestorRecursos.CargarSonido(self.name + "/ataque.mp3",False)
+                    son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.mp3",False)
+                    son_attack.set_volume(0.1)
+                    son_attack.play()
                     self.frame = 0
 
                     self.attacking = True
             #Character.currentAnim=SPRITE_ATTACK
+
         dropItems = []
         for obj in destructable:
             hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
@@ -199,6 +204,9 @@ class God(Character):
     #       Character.move(self,LEFT)
             self.velX = -self.vel[0]
         if keys[up] and not(self.jumping):
+            son_jump = GestorRecursos.CargarSonido("Comunes/salto.mp3",False)
+            son_jump.set_volume(0.02)
+            son_jump.play()
     #        Character.move(self,UP)
             self.jumpVel = -self.vel[1]
             self.jumping = True
@@ -220,29 +228,30 @@ class God(Character):
 #Clases de cada dios
 class Zeus(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y)
+        God.__init__(self, "hera.png", "hera.txt", x, y,)
 
 class Hera(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y)
+        God.__init__(self, "hera.png", "hera.txt", x, y,)
         God.setMeleeRange(self, 55, 60)
+        self.name = "Hera"
 
 
 class Hestia(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y)
+        God.__init__(self, "hera.png", "hera.txt", x, y,)
 
 class Poseidon(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y)
+        God.__init__(self, "hera.png", "hera.txt", x, y,)
 
 class Hades(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y)
+        God.__init__(self, "hera.png", "hera.txt", x, y,)
 
 class Demeter(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y)
+        God.__init__(self, "hera.png", "hera.txt", x, y,)
 
 
 #Clases personajes no jugables
