@@ -178,7 +178,7 @@ class God(Character):
                 if not self.attacking:
                     #son_attak = GestorRecursos.CargarSonido(self.name + "/ataque.mp3",False)
                     son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.mp3",False)
-                    son_attack.set_volume(0.1)
+                    son_attack.set_volume(Config.effectsVolume)
                     son_attack.play()
                     self.frame = 0
 
@@ -205,7 +205,7 @@ class God(Character):
             self.velX = -self.vel[0]
         if keys[up] and not(self.jumping):
             son_jump = GestorRecursos.CargarSonido("Comunes/salto.mp3",False)
-            son_jump.set_volume(0.02)
+            son_jump.set_volume(Config.effectsVolume / 10)
             son_jump.play()
     #        Character.move(self,UP)
             self.jumpVel = -self.vel[1]

@@ -145,13 +145,13 @@ class GUIText(GUIElement):
 class MusicVolumeText(GUIText):
     def __init__(self, screen):
         font = pygame.font.Font('Fonts/OLYMB.ttf', 70)
-        super().__init__(screen, font, (255, 255, 255), "10", (780, 375))
+        super().__init__(screen, font, (255, 255, 255), str(floor(Config.musicVolume * 100)), (780, 375))
     
 
 class SoundVolumeText(GUIText):
     def __init__(self, screen):
         font = pygame.font.Font('Fonts/OLYMB.ttf', 70)
-        super().__init__(screen, font, (255, 255, 255), "10", (780, 300))
+        super().__init__(screen, font, (255, 255, 255), str(floor(Config.effectsVolume * 100)), (780, 300))
 
 # class QuitText(GUIText):
 #     def __init__(self, screen):

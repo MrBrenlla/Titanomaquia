@@ -1,5 +1,6 @@
 import pygame
 from gestorRecursos import *
+from config import *
 
 STATIC_GROUP = 0
 INTERACTABLE_GROUP = 1
@@ -146,7 +147,7 @@ class Vase(MySprite):
 
     def damage(self):
         vase_sound = GestorRecursos.CargarSonido("Comunes/vasija_rompiendose.mp3",False)
-        vase_sound.set_volume(0.02)
+        vase_sound.set_volume(Config.effectsVolume / 10)
         vase_sound.play()
         self.kill()
         if self.item == 1:
@@ -169,6 +170,6 @@ class Mead(MySprite):
 
     def interact(self, level):
         vase_sound = GestorRecursos.CargarSonido("Comunes/beber_hidromiel.mp3",False)
-        vase_sound.set_volume(0.2)
+        vase_sound.set_volume(Config.effectsVolume)
         vase_sound.play()
         self.kill()
