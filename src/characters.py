@@ -176,8 +176,8 @@ class God(Character):
         for event in eventList:
             if event.type == KEYDOWN and event.key == K_SPACE:
                 if not self.attacking:
-                    #son_attak = GestorRecursos.CargarSonido(self.name + "/ataque.mp3",False)
-                    son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.mp3",False)
+                    #son_attak = GestorRecursos.CargarSonido(self.name + "/ataque.wav",False)
+                    son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.wav",False)
                     son_attack.set_volume(Config.effectsVolume)
                     son_attack.play()
                     self.frame = 0
@@ -204,7 +204,7 @@ class God(Character):
     #       Character.move(self,LEFT)
             self.velX = -self.vel[0]
         if keys[up] and not(self.jumping):
-            son_jump = GestorRecursos.CargarSonido("Comunes/salto.mp3",False)
+            son_jump = GestorRecursos.CargarSonido("Comunes/salto.wav",False)
             son_jump.set_volume(Config.effectsVolume / 10)
             son_jump.play()
     #        Character.move(self,UP)

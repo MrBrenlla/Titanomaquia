@@ -55,7 +55,7 @@ class Key(MySprite):
         self.rect.y = y
 
     def interact(self, level):
-        GestorRecursos.CargarSonido("Comunes/coger_llaves.mp3",False).play()
+        GestorRecursos.CargarSonido("Comunes/coger_llaves.wav",False).play()
         level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
         level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
         self.kill()
@@ -146,7 +146,7 @@ class Vase(MySprite):
         self.item = item
 
     def damage(self):
-        vase_sound = GestorRecursos.CargarSonido("Comunes/vasija_rompiendose.mp3",False)
+        vase_sound = GestorRecursos.CargarSonido("Comunes/vasija_rompiendose.wav",False)
         vase_sound.set_volume(Config.effectsVolume / 10)
         vase_sound.play()
         self.kill()
@@ -169,7 +169,7 @@ class Mead(MySprite):
         self.rect.y = y
 
     def interact(self, level):
-        vase_sound = GestorRecursos.CargarSonido("Comunes/beber_hidromiel.mp3",False)
+        vase_sound = GestorRecursos.CargarSonido("Comunes/beber_hidromiel.wav",False)
         vase_sound.set_volume(Config.effectsVolume)
         vase_sound.play()
         self.kill()

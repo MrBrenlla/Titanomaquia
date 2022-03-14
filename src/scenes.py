@@ -31,131 +31,13 @@ class Scene():
         raise NotImplemented("Tiene que implementar el metodo draw")
 
 
-class Olympus(Scene):
-
-    def __init__(self, director, player):
+class Phase(Scene):
+    def __init__(self, director):
         super().__init__(director)
-        self.screenWidth = 1280
-        self.screenHeight = 640
-        self.tileSize = 128
 
-        #Grupos de sprites del nivel
-        # self.floorGroup = pygame.sprite.Group()
-        # self.vaseGroup = pygame.sprite.Group()
-        # self.platformGroup = pygame.sprite.Group()
-        # self.staticGroup = pygame.sprite.Group()
-        # self.interactableGroup = pygame.sprite.Group()
-        GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
-        pygame.mixer.music.set_volume(Config.musicVolume)
-        pygame.mixer.music.play()
-
-        #Info del nivel
-        self.screens = []
-        self.levels = ["olimpo.txt", "templo1.txt", "templo2.txt", "templo3.txt", "temploZeus.txt"]
-        self.levelSize = [[49,5],[21,9],[21,9], [16,8], [21, 9]]
-        self.changeLevel = False
-        self.currentLevel = 0
-        self.lastLevel = 0
-
-
-
-        #grupos
-
-        for level in range(len(self.levels)):
-            # print(level)
-            self.screens.append(self.genLevel(self.levels[level], level))
-
-        if player == "Hera":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        elif player == "Demeter":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        elif player == "Hestia":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-
-
-    def events(self, eventList):
-        for event in eventList:
-            #Comprobar si se quiere salir
-            if event.type == pygame.QUIT:
-                self.director.exitGame()
-            if event.type == KEYDOWN and event.key == K_e:
-                self.player.interact(self.screens[self.currentLevel][INTERACTABLE_GROUP], self)
-            if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.director.stackScene(MenuPause(self.director))
-
-
-        keys = pygame.key.get_pressed()
-        #Acciones posibles del player
-        self.player.move(keys, K_w, K_d, K_a)
-        dropItems = self.player.attack(self.screens[self.currentLevel][DESTRUCTABLE_GROUP], eventList)
-        for item in dropItems:
-            self.screens[self.currentLevel][INTERACTABLE_GROUP].add(item)
-
-
-    def updateScroll(self):
-        #Usamos true scroll para hacer los calculos exactos del scroll
-        #El scroll es propio de cada pantalla para mantener los valores anteriores al cambiar entre ellas
-        trueScroll = self.screens[self.currentLevel][SCROLL]
-
-        if( (((self.player.rect.x-trueScroll[0]-640)/10)>=0 or trueScroll[0]>0) and ((trueScroll[0]<(self.levelSize[self.currentLevel][0]*128-1280-4)) or ((self.player.rect.x-trueScroll[0]-640)/10)<=0 )):
-            self.screens[self.currentLevel][SCROLL][0] += (self.player.rect.x-trueScroll[0]-640)/10
-
-        if ( ((trueScroll[1]>(self.levelSize[self.currentLevel][1]*(-128)+640+4)) or (((self.player.rect.y-trueScroll[1]-200)/10)>=0)) and (((self.player.rect.y-trueScroll[1]-200)/10)<=0 or trueScroll[1]<0) ):
-            self.screens[self.currentLevel][SCROLL][1] += (self.player.rect.y-trueScroll[1]-200)/10
-
-        #Copiamos los valores de true scroll y los convertimos a int para mayor fluidez
-        self.scroll = self.screens[self.currentLevel][SCROLL].copy()
-        self.scroll[0] = int(self.scroll[0])
-        self.scroll[1] = int(self.scroll[1])
-        #Comprobamos que la camara no se salga de los limites del mapa
-        if self.scroll[0] < 0: self.scroll[0] = 0
-        if self.scroll[1] > 0: self.scroll[1] = 0
-
-    def playerLimits(self):
-
-        levelWidth = self.levelSize[self.currentLevel][0]*128
-
-        if self.player.rect.x < 0:
-            self.player.rect.x = 0
-        if self.player.rect.x > levelWidth - self.player.rect.width:
-            self.player.rect.x = levelWidth - self.player.rect.width
-
-    def update(self, time):
-        self.updateScroll()
-        self.playerLimits()
-        self.player.update(self.screens[self.currentLevel][STATIC_GROUP])
-
-
-
-    def clearScreen(self, screen):
-        self.screens[self.currentLevel][STATIC_GROUP].clear(screen, self.screens[self.currentLevel][BACKGROUND])
-        self.screens[self.currentLevel][INTERACTABLE_GROUP].clear(screen, self.screens[self.currentLevel][BACKGROUND])
-        self.screens[self.currentLevel][DESTRUCTABLE_GROUP].clear(screen, self.screens[self.currentLevel][BACKGROUND])
-
-    def draw(self, screen):
-
-        if self.changeLevel:
-            self.clearScreen(screen)
-
-            self.changeLevel = False
-
-        screen.blit(self.screens[self.currentLevel][BACKGROUND].image, (self.screens[self.currentLevel][BACKGROUND].rect.x-self.scroll[0],self.screens[self.currentLevel][BACKGROUND].rect.y-self.scroll[1]))
-
-        for s in self.screens[self.currentLevel][STATIC_GROUP].sprites():
-            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-
-        for s in self.screens[self.currentLevel][INTERACTABLE_GROUP].sprites():
-            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-
-        for s in self.screens[self.currentLevel][DESTRUCTABLE_GROUP].sprites():
-            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-
-        self.player.draw(screen, self.scroll)
-
-
-    def genLevel(self, txt, lvl):
+    def genLevel(self, lvlName,  txt, lvl):
         #leemos el txt para saber que elemetos colocar
-        level = GestorRecursos.CargarNivelTxt("Olimpo/" + txt)
+        level = GestorRecursos.CargarNivelTxt(f"{lvlName}/{txt}")
         level = level.split("\n")
         
         l = len(level)
@@ -221,6 +103,130 @@ class Olympus(Scene):
         return [staticGroup, interactableGroup, destructableGroup, bgd, playerPos, levelScroll, doorArray, levelProgression]
 
 
+class Olympus(Phase):
+
+    def __init__(self, director, player):
+        super().__init__(director)
+        self.screenWidth = 1280
+        self.screenHeight = 640
+        self.tileSize = 128
+
+        #Grupos de sprites del nivel
+        # self.floorGroup = pygame.sprite.Group()
+        # self.vaseGroup = pygame.sprite.Group()
+        # self.platformGroup = pygame.sprite.Group()
+        # self.staticGroup = pygame.sprite.Group()
+        # self.interactableGroup = pygame.sprite.Group()
+        GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
+        pygame.mixer.music.set_volume(Config.musicVolume)
+        pygame.mixer.music.play()
+
+        #Info del nivel
+        self.screens = []
+        self.levels = ["olimpo.txt", "templo1.txt", "templo2.txt", "templo3.txt", "temploZeus.txt"]
+        self.levelSize = [[49,5],[21,9],[21,9], [16,8], [21, 9]]
+        self.changeLevel = False
+        self.currentLevel = 0
+        self.lastLevel = 0
+
+        self.playerName = player
+
+        #grupos
+
+        for level in range(len(self.levels)):
+            # print(level)
+            self.screens.append(super().genLevel("Olimpo", self.levels[level], level))
+
+        if player == "Hera":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Demeter":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Hestia":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+
+
+    def events(self, eventList):
+        for event in eventList:
+            #Comprobar si se quiere salir
+            if event.type == pygame.QUIT:
+                self.director.exitGame()
+            if event.type == KEYDOWN and event.key == K_e:
+                self.player.interact(self.screens[self.currentLevel][INTERACTABLE_GROUP], self)
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                self.director.stackScene(MenuPause(self.director))
+
+
+        keys = pygame.key.get_pressed()
+        #Acciones posibles del player
+        self.player.move(keys, K_w, K_d, K_a)
+        dropItems = self.player.attack(self.screens[self.currentLevel][DESTRUCTABLE_GROUP], eventList)
+        for item in dropItems:
+            self.screens[self.currentLevel][INTERACTABLE_GROUP].add(item)
+
+    def updateScroll(self):
+        #Usamos true scroll para hacer los calculos exactos del scroll
+        #El scroll es propio de cada pantalla para mantener los valores anteriores al cambiar entre ellas
+        trueScroll = self.screens[self.currentLevel][SCROLL]
+
+        if( (((self.player.rect.x-trueScroll[0]-640)/10)>=0 or trueScroll[0]>0) and ((trueScroll[0]<(self.levelSize[self.currentLevel][0]*128-1280-4)) or ((self.player.rect.x-trueScroll[0]-640)/10)<=0 )):
+            self.screens[self.currentLevel][SCROLL][0] += (self.player.rect.x-trueScroll[0]-640)/10
+
+        if ( ((trueScroll[1]>(self.levelSize[self.currentLevel][1]*(-128)+640+4)) or (((self.player.rect.y-trueScroll[1]-200)/10)>=0)) and (((self.player.rect.y-trueScroll[1]-200)/10)<=0 or trueScroll[1]<0) ):
+            self.screens[self.currentLevel][SCROLL][1] += (self.player.rect.y-trueScroll[1]-200)/10
+
+        #Copiamos los valores de true scroll y los convertimos a int para mayor fluidez
+        self.scroll = self.screens[self.currentLevel][SCROLL].copy()
+        self.scroll[0] = int(self.scroll[0])
+        self.scroll[1] = int(self.scroll[1])
+        #Comprobamos que la camara no se salga de los limites del mapa
+        if self.scroll[0] < 0: self.scroll[0] = 0
+        if self.scroll[1] > 0: self.scroll[1] = 0
+
+    def playerLimits(self):
+
+        levelWidth = self.levelSize[self.currentLevel][0]*128
+
+        if self.player.rect.x < 0:
+            self.player.rect.x = 0
+        if self.player.rect.x > levelWidth - self.player.rect.width:
+            self.player.rect.x = levelWidth - self.player.rect.width
+
+    def update(self, time):
+        self.updateScroll()
+        self.playerLimits()
+        self.player.update(self.screens[self.currentLevel][STATIC_GROUP])
+
+        if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
+            self.director.changeScene(CharacterSelectionMenu(self.director))
+
+    def clearScreen(self, screen):
+        self.screens[self.currentLevel][STATIC_GROUP].clear(screen, self.screens[self.currentLevel][BACKGROUND])
+        self.screens[self.currentLevel][INTERACTABLE_GROUP].clear(screen, self.screens[self.currentLevel][BACKGROUND])
+        self.screens[self.currentLevel][DESTRUCTABLE_GROUP].clear(screen, self.screens[self.currentLevel][BACKGROUND])
+
+    def draw(self, screen):
+
+        if self.changeLevel:
+            self.clearScreen(screen)
+
+            self.changeLevel = False
+
+        screen.blit(self.screens[self.currentLevel][BACKGROUND].image, (self.screens[self.currentLevel][BACKGROUND].rect.x-self.scroll[0],self.screens[self.currentLevel][BACKGROUND].rect.y-self.scroll[1]))
+
+        for s in self.screens[self.currentLevel][STATIC_GROUP].sprites():
+            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
+
+        for s in self.screens[self.currentLevel][INTERACTABLE_GROUP].sprites():
+            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
+
+        for s in self.screens[self.currentLevel][DESTRUCTABLE_GROUP].sprites():
+            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
+
+        self.player.draw(screen, self.scroll)
+
+
+    
+
 
 class Menu(Scene):
     def __init__(self, director):
@@ -256,7 +262,7 @@ class Menu(Scene):
 
     def playGame(self):
         phase = CharacterSelectionMenu(self.director)
-        self.director.stackScene(phase)
+        self.director.changeScene(phase)
 
     def changeToOptions(self):
         self.currentScreen = 1
@@ -332,7 +338,7 @@ class CharacterSelectionMenu(Scene):
     def playGame(self, player):
         pygame.mixer.music.stop()
         phase = Olympus(self.director, player)
-        self.director.stackScene(phase)
+        self.director.changeScene(phase)
 
     def changeToOptions(self):
         self.currentScreen = 1
