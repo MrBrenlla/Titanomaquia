@@ -4,6 +4,7 @@ from gestorRecursos import *
 from sprites import *
 from characters import *
 from gui import *
+from config import *
 
 #Constantes acceso a grupos del nivel
 # FLOOR_GROUP = 0
@@ -32,7 +33,7 @@ class Scene():
 
 class Olympus(Scene):
 
-    def __init__(self, director):
+    def __init__(self, director, player):
         super().__init__(director)
         self.screenWidth = 1280
         self.screenHeight = 640
@@ -44,6 +45,9 @@ class Olympus(Scene):
         # self.platformGroup = pygame.sprite.Group()
         # self.staticGroup = pygame.sprite.Group()
         # self.interactableGroup = pygame.sprite.Group()
+        GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
+        pygame.mixer.music.set_volume(Config.musicVolume)
+        pygame.mixer.music.play()
 
         #Info del nivel
         self.screens = []
@@ -61,7 +65,12 @@ class Olympus(Scene):
             # print(level)
             self.screens.append(self.genLevel(self.levels[level], level))
 
-        self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        if player == "Hera":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Demeter":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Hestia":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
 
 
     def events(self, eventList):
@@ -148,7 +157,7 @@ class Olympus(Scene):
         #leemos el txt para saber que elemetos colocar
         level = GestorRecursos.CargarNivelTxt("Olimpo/" + txt)
         level = level.split("\n")
-        sound = GestorRecursos.CargarSonido("Musica_Olimpo.mp3",True)
+        
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl)
         # print(bgd.rect)
@@ -217,8 +226,13 @@ class Menu(Scene):
     def __init__(self, director):
         super().__init__(director)
 
+        GestorRecursos.CargarSonido("Main_Menu.wav",True)
+        pygame.mixer.music.set_volume(Config.musicVolume)
+        pygame.mixer.music.play()
+
         self.screens = []
         self.screens.append(InitialScreen(self))
+        self.screens.append(OptionsScreen(self))
         #self.screens.append(OptionsScreen(self))
         self.showScreen()
 
@@ -241,9 +255,12 @@ class Menu(Scene):
         self.director.exitGame()
 
     def playGame(self):
-        phase = Olympus(self.director)
+        phase = CharacterSelectionMenu(self.director)
         self.director.stackScene(phase)
 
+    def changeToOptions(self):
+        self.currentScreen = 1
+        
     def showScreen(self):
         self.currentScreen = 0
     # def mostrarPantallaConfiguracion(self):
@@ -255,6 +272,7 @@ class MenuPause(Scene):
 
         self.screens = []
         self.screens.append(PauseScreen(self))
+        self.screens.append(OptionsScreen(self))
         self.showScreen()
 
     def update(self, *args):
@@ -277,8 +295,49 @@ class MenuPause(Scene):
     def exitGame(self):
         self.director.exitGame()
 
+    def changeToOptions(self):
+        self.currentScreen = 1
+
     def resumeGame(self):
         self.director.exitScene()
 
     def showScreen(self):
         self.currentScreen = 0
+
+
+class CharacterSelectionMenu(Scene):
+    def __init__(self, director):
+        super().__init__(director)
+
+        self.screens = []
+        self.screens.append(SelectionScreen(self))
+        #self.screens.append(OptionsScreen(self))
+        self.showScreen()
+
+    def update(self, *args):
+        return
+
+    def events(self, eventList):
+        for event in eventList:
+            #Comprobar si se quiere salir
+            if event.type == pygame.QUIT:
+                self.director.exitGame()
+
+        self.screens[self.currentScreen].events(eventList)
+
+    def draw(self, screen):
+        self.screens[self.currentScreen].draw(screen)
+
+
+    def playGame(self, player):
+        pygame.mixer.music.stop()
+        phase = Olympus(self.director, player)
+        self.director.stackScene(phase)
+
+    def changeToOptions(self):
+        self.currentScreen = 1
+        
+    def showScreen(self):
+        self.currentScreen = 0
+    # def mostrarPantallaConfiguracion(self):
+    # self.pantallaActual = ...

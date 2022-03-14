@@ -29,7 +29,7 @@ class GestorRecursos(object):
                 raise (SystemExit, message)
             imagen = imagen.convert()
             if colorkey is not None:
-                if colorkey is -1:
+                if colorkey == -1:
                     colorkey = imagen.get_at((0,0))
                 imagen.set_colorkey(colorkey, RLEACCEL)
             # Se almacena
@@ -84,8 +84,7 @@ class GestorRecursos(object):
             try:
                 if (esMusica):
                     sound = pygame.mixer.music.load("Musica/" + nombre)
-                    pygame.mixer.music.set_volume(0.05)
-                    pygame.mixer.music.play()
+                    
                 else:
                     sound = pygame.mixer.Sound("Sonidos/" + nombre)
             except pygame.error:

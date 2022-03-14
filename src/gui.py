@@ -1,5 +1,7 @@
+from math import floor
 import pygame
 from gestorRecursos import *
+from config import *
 
 class GUIElement():
     def __init__(self, screen, rect):
@@ -27,10 +29,10 @@ class GUIElement():
 
 
 class GUIButton(GUIElement):
-    def __init__(self, screen, image, position):
+    def __init__(self, screen, image, position, size):
 
         self.image = GestorRecursos.CargarImagen(image, -1)
-        self.image = pygame.transform.scale(self.image, (200, 60))
+        self.image = pygame.transform.scale(self.image, size)
         super().__init__(screen, self.image.get_rect())
 
         self.setPosition(position)
@@ -41,46 +43,115 @@ class GUIButton(GUIElement):
 
 class PlayButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position)
+        super().__init__(screen, image, position, (220, 60))
 
     def action(self):
-        pygame.mixer.music.stop()
         self.screen.menu.playGame()
 
 class ContinueButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position)
+        super().__init__(screen, image, position, (220, 60))
 
     def action(self):
         self.screen.menu.resumeGame()
-        pygame.mixer.music.stop()
+        # pygame.mixer.music.stop()
+
+class OptionsButton(GUIButton):
+    def __init__(self, screen, image, position):
+        super().__init__(screen, image, position, (220, 60))
+
+    def action(self):
+        self.screen.menu.changeToOptions()
+
+class BackButton(GUIButton):
+    def __init__(self, screen, image, position):
+        super().__init__(screen, image, position, (220, 60))
+
+    def action(self):
+        self.screen.menu.showScreen()
 
 class QuitButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position)
+        super().__init__(screen, image, position, (220, 60))
 
     def action(self):
         self.screen.menu.exitGame()
 
 
+class SelectPlayerButton(GUIButton):
+    def __init__(self, screen, image, position, player):
+        super().__init__(screen, image, position, (200, 200))
+        self.player = player
+
+    def action(self):
+        self.screen.menu.playGame(self.player)
+
+class ChangeVolumeButton(GUIButton):
+    def __init__(self, screen, image, position, type, change, text):
+        super().__init__(screen, image, position, (50, 50))
+        self.type = type
+        self.change = change
+        self.textB = text
+    def action(self):
+        if self.type == "musica":
+            Config.musicVolume += self.change
+            if Config.musicVolume > 0.1: Config.musicVolume = 0.1
+            if Config.musicVolume < 0: Config.musicVolume = 0
+            self.textB.change(str(floor(Config.musicVolume * 100)))
+            pygame.mixer.music.set_volume(Config.musicVolume)
+        else:
+            Config.effectsVolume += self.change
+            if Config.effectsVolume > 0.1: Config.effectsVolume = 0.1
+            if Config.effectsVolume < 0: Config.effectsVolume = 0
+            self.textB.change(str(floor(Config.effectsVolume * 100)))
+
 class GUIText(GUIElement):
     def __init__(self, screen, font, color, text, position):
+        self.font = font
+        self.color = color
+        self.outline = font.render(text, True, (0, 0, 0))
         self.image = font.render(text, True, color)
-        super().__init__(screen, self.image.get_rect(), 40)
+        super().__init__(screen, self.image.get_rect())
         self.setPosition(position)
 
     def draw(self, screen):
+        #draw outline
+        stroke = 3
+        #top left
+        screen.blit(self.outline, (self.rect.x - stroke, self.rect.y - stroke))
+        #top center
+        screen.blit(self.outline, (self.rect.x, self.rect.y - stroke))
+        screen.blit(self.outline, (self.rect.x - stroke, self.rect.y))
+        #top right
+        screen.blit(self.outline, (self.rect.x + stroke, self.rect.y - stroke))
+        #bottom left
+        screen.blit(self.outline, (self.rect.x - stroke, self.rect.y + stroke))
+        #bottom center
+        screen.blit(self.outline, (self.rect.x, self.rect.y + stroke))
+        screen.blit(self.outline, (self.rect.x + stroke, self.rect.y))
+        #bottom left
+        screen.blit(self.outline, (self.rect.x + stroke, self.rect.y + stroke))
+        #real text
         screen.blit(self.image, self.rect)
         # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
 
+    def action(self):
+        return
 
-# class PlayText(GUIText):
-#     def __init__(self, screen):
-#         font = pygame.font.Font('Fonts/OLYMB.ttf', 40)
-#         super().__init__(screen, font, (0, 0, 0), "PLAY", (640, 302))
+    def change(self, text):
+        self.outline = self.font.render(text, True, (0, 0, 0))
+        self.image = self.font.render(text, True, self.color)
 
-#     def action(self):
-#         self.screen.menu.playGame()
+class MusicVolumeText(GUIText):
+    def __init__(self, screen):
+        font = pygame.font.Font('Fonts/OLYMB.ttf', 70)
+        super().__init__(screen, font, (255, 255, 255), "10", (780, 375))
+    
+
+class SoundVolumeText(GUIText):
+    def __init__(self, screen):
+        font = pygame.font.Font('Fonts/OLYMB.ttf', 70)
+        super().__init__(screen, font, (255, 255, 255), "10", (780, 300))
 
 # class QuitText(GUIText):
 #     def __init__(self, screen):
@@ -113,12 +184,12 @@ class GUIScreen():
     def events(self, eventList):
 
         for event in eventList:
-            if event.type == MOUSEBUTTONDOWN:
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
                 self.elementClick = None
                 for element in self.GUIElements:
                     if element.inElementPosition(event.pos):
                         self.elementClick = element
-            if event.type == MOUSEBUTTONUP:
+            if event.type == MOUSEBUTTONUP and event.button == 1:
                 for element in self.GUIElements:
                     if element.inElementPosition(event.pos):
                         if (element == self.elementClick):
@@ -135,13 +206,11 @@ class GUIScreen():
 
 class InitialScreen(GUIScreen):
     def __init__(self, menu):
-        super().__init__(menu, "Menu/fondoMenu.png", None)
+        super().__init__(menu, "Menu/fondoMenuES.png", None)
         playButton = PlayButton(self, "Menu/fondo.png", (640, 310))
-        optionsButton = QuitButton(self, "Menu/fondo.png", (640, 375))
+        optionsButton = OptionsButton(self, "Menu/fondo.png", (640, 375))
         quitButton = QuitButton(self, "Menu/fondo.png", (640, 440))
-        sound = GestorRecursos.CargarSonido("Main_Menu.mp3",True)
-
-
+        
 
         self.GUIElements.append(playButton)
         self.GUIElements.append(optionsButton)
@@ -152,11 +221,49 @@ class InitialScreen(GUIScreen):
 class PauseScreen(GUIScreen):
     def __init__(self, menu):
         super().__init__(menu, "Menu/fondoMenuPausa4.png", None)
-        continueButton = ContinueButton(self, "Menu/fondo.png", (120, 285))
-        optionsButton = QuitButton(self, "Menu/fondo.png", (120, 350))
-        quitButton = QuitButton(self, "Menu/fondo.png", (120, 415))
+        continueButton = ContinueButton(self, "Menu/fondo.png", (135, 275))
+        optionsButton = OptionsButton(self, "Menu/fondo.png", (135, 340))
+        quitButton = QuitButton(self, "Menu/fondo.png", (135, 405))
 
 
         self.GUIElements.append(continueButton)
         self.GUIElements.append(optionsButton)
         self.GUIElements.append(quitButton)
+
+
+class OptionsScreen(GUIScreen):
+    def __init__(self, menu):
+        super().__init__(menu, "Menu/menuOpciones.png", None)
+        #adjust volume
+        #playButton = PlayButton(self, "Menu/fondo.png", (640, 310))
+        #optionsButton = QuitButton(self, "Menu/fondo.png", (640, 375))
+        backButton = BackButton(self, "Menu/fondo.png", (640, 440))
+        musicVolumeText = MusicVolumeText(self)
+        musicVoumeUpButton = ChangeVolumeButton(self, "Menu/fondo.png", (850, 375), "musica", 0.01, musicVolumeText)
+        musicVoumeDownButton = ChangeVolumeButton(self, "Menu/fondo.png", (700, 375), "musica", -0.01, musicVolumeText)
+        soundVolumeText = SoundVolumeText(self)
+        effectVoumeUpButton = ChangeVolumeButton(self, "Menu/fondo.png", (850, 300), "efectos", 0.01, soundVolumeText)
+        effectVoumeDownButton = ChangeVolumeButton(self, "Menu/fondo.png", (700, 300), "efectos", -0.01, soundVolumeText)
+
+        self.GUIElements.append(backButton)
+        self.GUIElements.append(musicVolumeText)
+        self.GUIElements.append(musicVoumeUpButton)
+        self.GUIElements.append(musicVoumeDownButton)
+        self.GUIElements.append(soundVolumeText)
+        self.GUIElements.append(effectVoumeUpButton)
+        self.GUIElements.append(effectVoumeDownButton)
+
+
+class SelectionScreen(GUIScreen):
+    def __init__(self, menu):
+        super().__init__(menu, "Menu/menuSeleccionPersonaje.png", None)
+
+        for i in range(len(Config.availableCharacters)):
+            #creamos un boton para cada personaje
+            if i < 3:
+                selection = SelectPlayerButton(self, f"Dioses/{Config.availableCharacters[i]}Menu.png", (364+276*i, 300), Config.availableCharacters[i])
+                self.GUIElements.append(selection)
+            else:
+                selection = SelectPlayerButton(self, f"Dioses/{Config.availableCharacters[i]}Menu.png", (364+276*(i-3), 540), Config.availableCharacters[i])
+                self.GUIElements.append(selection)
+        
