@@ -17,13 +17,13 @@ class MySprite(pygame.sprite.Sprite):
 
 
 class Background(MySprite):
-    def __init__(self, x, y, bgd):
+    def __init__(self, x, y, bgd, level):
         MySprite.__init__(self)
         # Cargamos la imagen
         if bgd == 0:
-            fondo = "Olimpo/Exterior.png"
+            fondo = f"{level}/fondo1.png"
         else:
-            fondo = "Olimpo/Templo.png"
+            fondo = f"{level}/fondo2.png"
         self.image = GestorRecursos.CargarImagen(fondo)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
@@ -37,6 +37,16 @@ class Floor(MySprite):
         MySprite.__init__(self)
         # Cargamos la imagen
         self.image = GestorRecursos.CargarImagen('Olimpo/SueloOlimpo.png')
+        # El rectangulo donde estara la imagen
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+class Dialog(MySprite):
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        # Cargamos la imagen
+        self.image = GestorRecursos.CargarImagen('Olimpo/Texto1.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -85,7 +95,7 @@ class Door(MySprite):
             level.currentLevel = self.level
             level.lastLevel = self.lastLevel
             #Posicionar al jugador segun la posicion correcta en el nivel y actualizar la del nivel anterior
-            level.screens[level.lastLevel][PLAYER_POS] = (self.rect.x, self.rect.y + 128)
+            level.screens[level.lastLevel][PLAYER_POS] = (self.rect.x, self.rect.y)
             # print(self.player.rect.x, self.player.rect.y)
             level.player.rect.x = level.screens[level.currentLevel][PLAYER_POS][0]
             level.player.rect.y = level.screens[level.currentLevel][PLAYER_POS][1]
@@ -155,6 +165,26 @@ class Vase(MySprite):
         if self.item == 2:
             return Key(self.rect.x, self.rect.y)
         return []
+
+
+class PracticeGuard(MySprite):
+    "Los Sprites que tendra este juego"
+    # Primero invocamos al constructor de la clase padre
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        # Cargamos la imagen
+        self.image = GestorRecursos.CargarImagen('Olimpo/practiceGuard.png', -1)
+        # El rectangulo donde estara la imagen
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def damage(self):
+        hitSound = GestorRecursos.CargarSonido("Comunes/vasija_rompiendose.wav",False)
+        hitSound.set_volume(Config.effectsVolume / 10)
+        hitSound.play()
+        return []
+
 
 class Mead(MySprite):
     "Los Sprites que tendra este juego"

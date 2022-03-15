@@ -269,8 +269,11 @@ class NPC(NoPlayer):
         self.rect.y = y
         self.guard = guard
 
+
     def interact(self, level):
         if (level.screens[level.currentLevel][LEVEL_PROGRESSION] == self.guard) and ((not level.screens[self.guard][DOORS][-1].closed) or self.guard == 0):
+            level.screens[level.currentLevel][STATIC_GROUP].add(Dialog(self.rect.x - 60, self.rect.y - 256))
+
             level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
             level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
 

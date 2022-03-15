@@ -29,9 +29,9 @@ class GUIElement():
 
 
 class GUIButton(GUIElement):
-    def __init__(self, screen, image, position, size):
+    def __init__(self, screen, image, position, size, chroma):
 
-        self.image = GestorRecursos.CargarImagen(image, -1)
+        self.image = GestorRecursos.CargarImagen(image, chroma)
         self.image = pygame.transform.scale(self.image, size)
         super().__init__(screen, self.image.get_rect())
 
@@ -43,14 +43,14 @@ class GUIButton(GUIElement):
 
 class PlayButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position, (220, 60))
+        super().__init__(screen, image, position, (220, 60), -1)
 
     def action(self):
         self.screen.menu.playGame()
 
 class ContinueButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position, (220, 60))
+        super().__init__(screen, image, position, (220, 60), -1)
 
     def action(self):
         self.screen.menu.resumeGame()
@@ -58,21 +58,21 @@ class ContinueButton(GUIButton):
 
 class OptionsButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position, (220, 60))
+        super().__init__(screen, image, position, (220, 60), -1)
 
     def action(self):
         self.screen.menu.changeToOptions()
 
 class BackButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position, (220, 60))
+        super().__init__(screen, image, position, (220, 60), -1)
 
     def action(self):
         self.screen.menu.showScreen()
 
 class QuitButton(GUIButton):
     def __init__(self, screen, image, position):
-        super().__init__(screen, image, position, (220, 60))
+        super().__init__(screen, image, position, (220, 60), -1)
 
     def action(self):
         self.screen.menu.exitGame()
@@ -80,15 +80,23 @@ class QuitButton(GUIButton):
 
 class SelectPlayerButton(GUIButton):
     def __init__(self, screen, image, position, player):
-        super().__init__(screen, image, position, (200, 200))
+        super().__init__(screen, image, position, (200, 200), -1)
         self.player = player
 
     def action(self):
         self.screen.menu.playGame(self.player)
 
+class SelectLevelButton(GUIButton):
+    def __init__(self, screen, image, position, level):
+        super().__init__(screen, image, position, (400, 400), None)
+        self.level = level
+
+    def action(self):
+        self.screen.menu.characterSelect(self.level)
+
 class ChangeVolumeButton(GUIButton):
     def __init__(self, screen, image, position, type, change, text):
-        super().__init__(screen, image, position, (50, 50))
+        super().__init__(screen, image, position, (50, 50), -1)
         self.type = type
         self.change = change
         self.textB = text
@@ -153,22 +161,16 @@ class SoundVolumeText(GUIText):
         font = pygame.font.Font('Fonts/OLYMB.ttf', 70)
         super().__init__(screen, font, (255, 255, 255), str(floor(Config.effectsVolume * 100)), (780, 300))
 
-# class QuitText(GUIText):
-#     def __init__(self, screen):
-#         font = pygame.font.Font('Fonts/OLYMB.ttf', 40)
-#         super().__init__(screen, font, (0, 0, 0), "QUIT", (640, 402))
-
-#     def action(self):
-#         self.screen.menu.exitGame()
 
 
-# class TitleText(GUIText):
-#     def __init__(self, screen):
-#         font = pygame.font.SysFont('supermario256', 140)
-#         super().__init__(screen, font, (255, 255, 255), "TITANOMAQUIA", (50, 200))
 
-#     def action(self):
-#         return
+class LevelText(GUIText):
+    def __init__(self, screen, level, pos):
+        font = pygame.font.Font('Fonts/OLYMB.ttf', 40)
+        super().__init__(screen, font, (255, 255, 255), level, pos)
+
+    def action(self):
+        self.screen.menu.characterSelect(self.level)
 
 
 
@@ -261,9 +263,28 @@ class SelectionScreen(GUIScreen):
         for i in range(len(Config.availableCharacters)):
             #creamos un boton para cada personaje
             if i < 3:
-                selection = SelectPlayerButton(self, f"Dioses/{Config.availableCharacters[i]}Menu.png", (364+276*i, 300), Config.availableCharacters[i])
+                selection = SelectPlayerButton(self, f"Menu/{Config.availableCharacters[i]}Menu.png", (364+276*i, 300), Config.availableCharacters[i])
                 self.GUIElements.append(selection)
             else:
-                selection = SelectPlayerButton(self, f"Dioses/{Config.availableCharacters[i]}Menu.png", (364+276*(i-3), 540), Config.availableCharacters[i])
+                selection = SelectPlayerButton(self, f"Menu/{Config.availableCharacters[i]}Menu.png", (364+276*(i-3), 540), Config.availableCharacters[i])
                 self.GUIElements.append(selection)
-        
+
+
+class LevelSelectionScreen(GUIScreen):
+    def __init__(self, menu):
+        super().__init__(menu, "Menu/menuSeleccionNivel.png", None)
+
+        if len(Config.availableLevels) == 1:
+            text = LevelText(self, Config.availableLevels[0], (640, 400))
+            selection = SelectLevelButton(self, f"Menu/{Config.availableLevels[0]}Menu.png", (640, 420), Config.availableLevels[0])
+            self.GUIElements.append(selection)
+            self.GUIElements.append(text)
+        else:
+            text = LevelText(self, Config.availableLevels[0], (640-228, 400))
+            selection = SelectLevelButton(self, f"Menu/{Config.availableLevels[0]}Menu.png", (640-228, 420), Config.availableLevels[0])
+            self.GUIElements.append(selection)
+            self.GUIElements.append(text)
+            text = LevelText(self, Config.availableLevels[1], (640+228, 400))
+            selection = SelectLevelButton(self, f"Menu/{Config.availableLevels[1]}Menu.png", (640+228, 420), Config.availableLevels[1])
+            self.GUIElements.append(selection)
+            self.GUIElements.append(text)
