@@ -21,7 +21,7 @@ if __name__ == '__main__':
     director = Director()
 
     #Creamos la primera escena
-    scene = SubTemple(director, "Zeus")#Menu(director)
+    scene = Menu(director)
 
 
     director.stackScene(scene)

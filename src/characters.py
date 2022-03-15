@@ -1,7 +1,7 @@
 import pygame
 from gestorRecursos import *
 from sprites import *
-
+import random
 
 # Movimientos
 STILL = 0
@@ -16,7 +16,7 @@ SPRITE_IDLE = 2
 SPRITE_DYING = 3
 SPRITE_LET_DYING = 4
 SPRITE_ATTACK = 5
-
+# TODO: Crear una funcion muerte y posiblemente llamarla en escenas en vez del update y tal
 #Clase generica Personaje
 class Character(MySprite):
     def __init__(self, spriteSheet, coords, x, y):
@@ -25,6 +25,8 @@ class Character(MySprite):
         self.vel = (7, 20)
         self.velX = 0
         self.displacement = [False,False]
+
+        self.lifes = 3
 
         self.attacking = False
 
@@ -107,38 +109,41 @@ class Character(MySprite):
 
     def update(self, static):
 
+        if (self.lifes>0):
 
-        self.rect.x += self.velX
-        self.rect.y += self.jumpVel
+            self.rect.x += self.velX
+            self.rect.y += self.jumpVel
 
-        self.attackRect.x += self.velX
-        self.attackRect.y = self.rect.y
-
-
-
-        if (self.jumping):
-            self.currentAnim=SPRITE_JUMPING
-
-        elif (self.velX>0 or self.velX<0) and not(self.attacking):
-                self.currentAnim=SPRITE_WALKING
-
-        elif (self.velX==0):
-            self.currentAnim=SPRITE_IDLE
-
-
-        if (self.attacking):
-            self.currentAnim=SPRITE_ATTACK
-            if self.right:
-                self.attackRect.x = self.rect.x + self.rect.width
-            else:
-                self.attackRect.x = self.rect.x - self.attackRangeWidth
+            self.attackRect.x += self.velX
             self.attackRect.y = self.rect.y
-            self.attackRect.width = self.attackRangeWidth
-            self.attackRect.height = self.attackRangeHeight
-            if (self.frame>=4):
-                self.attacking = False
-                self.attackRect = pygame.Rect(0, 0, 0, 0)
 
+
+
+            if (self.jumping):
+                self.currentAnim=SPRITE_JUMPING
+
+            elif (self.velX>0 or self.velX<0) and not(self.attacking):
+                    self.currentAnim=SPRITE_WALKING
+
+            elif (self.velX==0):
+                self.currentAnim=SPRITE_IDLE
+
+
+            if (self.attacking):
+                self.currentAnim=SPRITE_ATTACK
+                if self.right:
+                    self.attackRect.x = self.rect.x + self.rect.width
+                else:
+                    self.attackRect.x = self.rect.x - self.attackRangeWidth
+                self.attackRect.y = self.rect.y
+                self.attackRect.width = self.attackRangeWidth
+                self.attackRect.height = self.attackRangeHeight
+                if (self.frame>=4):
+                    self.attacking = False
+                    self.attackRect = pygame.Rect(0, 0, 0, 0)
+        else:
+            if (self.frame>=4):
+                self.currentAnim=SPRITE_LET_DYING
         #check collisions
         static_collider = pygame.sprite.spritecollideany(self, static)
 
@@ -170,6 +175,9 @@ class God(Character):
         Character.__init__(self, spriteSheet, coords, x, y)
         self.name=""
         self.observers = []
+        self.invencibilityCD = pygame.USEREVENT + 1
+        self.timeVulnerability = 1100
+        self.invencibility = False
 
 
     def addObserver(self,observer):
@@ -177,30 +185,31 @@ class God(Character):
            self.observers.append(observer)
            
     def attack(self, destructable, eventList):
-
+        pass
 
     def move(self, keys, up, right, left):
         self.velX = 0
-        if keys[right]:
-    #        Character.move(self,RIGHT)
-            self.right = True
-            self.velX = self.vel[0]
-        if keys[left]:
-            self.right = False
-    #       Character.move(self,LEFT)
-            self.velX = -self.vel[0]
-        if keys[up] and not(self.jumping):
-            son_jump = GestorRecursos.CargarSonido("Comunes/salto.wav",False)
-            son_jump.set_volume(Config.effectsVolume / 10)
-            son_jump.play()
-    #        Character.move(self,UP)
-            self.jumpVel = -self.vel[1]
-            self.jumping = True
-        #aplicamos gravedad
-        self.jumpVel += 1
-        #velocidad terminal
-        if self.jumpVel > 15:
-            self.jumpVel = 15
+        if (self.lifes>0):
+            if keys[right]:
+        #        Character.move(self,RIGHT)
+                self.right = True
+                self.velX = self.vel[0]
+            if keys[left]:
+                self.right = False
+        #       Character.move(self,LEFT)
+                self.velX = -self.vel[0]
+            if keys[up] and not(self.jumping):
+                son_jump = GestorRecursos.CargarSonido("Comunes/salto.wav",False)
+                son_jump.set_volume(Config.effectsVolume / 10)
+                son_jump.play()
+        #        Character.move(self,UP)
+                self.jumpVel = -self.vel[1]
+                self.jumping = True
+            #aplicamos gravedad
+            self.jumpVel += 1
+            #velocidad terminal
+            if self.jumpVel > 15:
+                self.jumpVel = 15
 
     def interact(self, interactables, level):
         interact_collider = pygame.sprite.spritecollideany(self, interactables)
@@ -210,8 +219,20 @@ class God(Character):
     def TakeDamage(self, enemies):
         interact_collider = pygame.sprite.spritecollideany(self, enemies)
         if (interact_collider != None):
-            for s in self.observers:
-                s.notify
+            if (not(self.invencibility)):
+                self.invencibility = True
+                pygame.time.set_timer(self.invencibilityCD, self.timeVulnerability)
+                self.lifes -= 1
+                for s in self.observers:
+                    s.notify(1)
+                
+                if (self.lifes == 0):
+                    self.frame=0
+                    self.currentAnim=SPRITE_DYING
+
+    def update(self, static, enemies):
+        super().update(static)
+        self.TakeDamage(enemies)
 
 class GodMelee(God):
         
@@ -348,7 +369,9 @@ class Enemy(NoPlayer):
         self.rect.y = y
         self.vel = (5, 20)
         self.firstApparition = False
-        self.direction = True
+        self.direction = random.choice([True, False])
+        if (self.direction):
+            self.image = pygame.transform.flip(self.image,1,0)
 
     def move(self, right):
         self.velX = 0
@@ -375,7 +398,9 @@ class Telchines(Enemy):
 class Mermaids(Enemy):
     def __init__(self,x,y):
         Enemy.__init__(self,"Mermaid1.png",x,y)
-    
+        
+        self.rect.width = 30    
+
     def move_enemy(self,level,static_group):
         spriteCollide = pygame.sprite.spritecollide(self, static_group, False)
         if not(self.firstApparition):
@@ -383,13 +408,18 @@ class Mermaids(Enemy):
                 self.firstApparition=True
         else:
             if (spriteCollide == []):
+                self.image = pygame.transform.flip(self.image,1,0)
                 self.direction = not(self.direction)
             if(self.rect.left<50):
+                self.image = pygame.transform.flip(self.image,1,0)
                 self.direction = True
             if(self.rect.right>(level.levelSize[level.currentLevel][0]*128)-50):
+                self.image = pygame.transform.flip(self.image,1,0)
                 self.direction = False
             Enemy.move(self,self.direction)
             # print(self.rect.left, " ", self.rect.right, spriteCollide)
             
 
-        return
+    def draw(self, screen, newScroll):
+        screen.blit(self.image, (self.rect.x - 30 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
+        # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)

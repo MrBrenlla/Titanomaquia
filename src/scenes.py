@@ -49,7 +49,9 @@ class Phase(Scene):
                 self.player.interact(self.screens[self.currentLevel][INTERACTABLE_GROUP], self)
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.director.stackScene(MenuPause(self.director))
-
+            if event.type == self.player.invencibilityCD:
+                self.player.invencibility = False
+                pygame.time.set_timer(self.player.invencibilityCD, 0)
 
         keys = pygame.key.get_pressed()
         #Acciones posibles del player
@@ -110,7 +112,11 @@ class Phase(Scene):
         for s in self.screens[self.currentLevel][DESTRUCTABLE_GROUP].sprites():
             screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
 
+        for s in self.screens[self.currentLevel][ENEMY_GROUP].sprites():
+            s.draw(screen,self.scroll)
+
         self.player.draw(screen, self.scroll)
+        self.LifeGUI.draw(screen)
 
     def genLevel(self, lvlName,  txt, lvl, playerPos):
         #leemos el txt para saber que elemetos colocar
@@ -216,6 +222,7 @@ class Olympus(Phase):
 
         self.playerName = player
 
+        self.LifeGUI = LifeGUI("Barra de vida.png","VidaCoords.txt")
         #grupos
 
         for level in range(len(self.levels)):
@@ -236,12 +243,15 @@ class Olympus(Phase):
         elif player == "Poseidon":
             self.player = Poseidon(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
 
+        self.player.addObserver(self.LifeGUI)
 
 
     def update(self, time):
         super().updateScroll()
         super().playerLimits()
-        self.player.update(self.screens[self.currentLevel][STATIC_GROUP])
+        self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP])
+        for s in self.screens[self.currentLevel][ENEMY_GROUP]:
+            s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
 
         #condicion de fin de nivel
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):

@@ -3,6 +3,13 @@ import pygame
 from gestorRecursos import *
 from config import *
 
+class HUD():
+    def __init__(self,rect):
+        self.rect = rect
+
+    def draw(self):
+        raise NotImplemented("Tiene que implementar el metodo draw.")
+
 class GUIElement():
     def __init__(self, screen, rect):
         self.screen = screen
@@ -290,18 +297,40 @@ class LevelSelectionScreen(GUIScreen):
             self.GUIElements.append(selection)
             self.GUIElements.append(text)
 
-class LifeGUI(GUIElement):
-    def __init__(self, screen, image, position, size):
+class LifeGUI(HUD):
+    def __init__(self, spriteSheet,coordstxt):
+        self.datos = []
+        self.sheet = GestorRecursos.CargarImagen('HUD/' + spriteSheet, -1)
+        self.sheet = self.sheet.convert_alpha()
+        self.coords = GestorRecursos.CargarArchivoCoordenadas('HUD/' + coordstxt)
+        self.currentCoord = 0
+        self.coords = self.coords.splitlines()
 
-        self.image = GestorRecursos.CargarImagen(image, -1)
-        self.image = pygame.transform.scale(self.image, size)
-        super().__init__(screen, self.image.get_rect())
+        for d in range(0, len(self.coords)):
+            self.datos.append(list(map(int, self.coords[d].split())))
+            
+        
+        self.image = self.sheet.subsurface(self.datos[self.currentCoord])
+        #self.image = GestorRecursos.CargarImagen('HUD/' + spriteSheet, -1)
 
-        self.setPosition(position)
+        super().__init__(self.image.get_rect())
+        self.rect.y -= 20
+        self.rect.x += 10
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
+    def notify(self,disminuye):
+        if(disminuye):
+            if(self.currentCoord < 3):
+                self.currentCoord +=1
+                self.image = self.sheet.subsurface(self.datos[self.currentCoord])
+        else:
+            print(self.currentCoord)
+            if(self.currentCoord >= 0):
+                self.currentCoord -=1
+                
+                self.image = self.sheet.subsurface(self.datos[self.currentCoord])
 
 class InGameGUI(GUIScreen):
     def __init__(self, menu):
