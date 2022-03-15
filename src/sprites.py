@@ -33,10 +33,10 @@ class Background(MySprite):
 class Floor(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
+    def __init__(self, x, y,lvlName):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo/SueloOlimpo.png')
+        self.image = GestorRecursos.CargarImagen(f'{lvlName}/Suelo.png')
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -73,10 +73,10 @@ class Key(MySprite):
 class Door(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y, level, lastLevel):
+    def __init__(self, x, y, level, lastLevel, lvlName):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('ObjetosComunes/PortaPechada.png', -1)
+        self.image = GestorRecursos.CargarImagen(f'{lvlName}/PortaPechada.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -101,40 +101,13 @@ class Door(MySprite):
             level.player.rect.y = level.screens[level.currentLevel][PLAYER_POS][1]
 
 
-
-
-class Wall(MySprite):
-    "Los Sprites que tendra este juego"
-    # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
-        MySprite.__init__(self)
-        # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo/Wall.png', -1)
-        # El rectangulo donde estara la imagen
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
-
-class Ceiling(MySprite):
-    "Los Sprites que tendra este juego"
-    # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y, type):
-        MySprite.__init__(self)
-        # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen(f'Olimpo/techo{type}.png', -1)
-        # El rectangulo donde estara la imagen
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-
 class Platform(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y):
+    def __init__(self, x, y,lvlName):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo/Plataforma.png', -1)
+        self.image = GestorRecursos.CargarImagen(f'{lvlName}/Plataforma.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
