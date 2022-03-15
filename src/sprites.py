@@ -176,3 +176,19 @@ class Mead(MySprite):
         vase_sound.set_volume(Config.effectsVolume)
         vase_sound.play()
         self.kill()
+
+
+
+class Proyectile(MySprite):
+    def __init(self,x,y,nameGod):
+        MySprite.__init__(self)
+        self.image = GestorRecursos.CargarImagen('/Proyectiles/proyectil_hestia.png', -1)
+        self.posX = x
+        self.posY = y
+        self.vel = 10
+        self.damage = 10
+        self.rect = self.image.get_rect()
+
+    def dropProyectile(self, screen):
+        screen.blit(self.image, self.rect)
+        self.rect.x += self.vel

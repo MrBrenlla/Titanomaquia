@@ -114,7 +114,7 @@ class Phase(Scene):
         #leemos el txt para saber que elemetos colocar
         level = GestorRecursos.CargarNivelTxt(f"{lvlName}/{txt}")
         level = level.split("\n")
-        
+
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl, lvlName)
         # print(bgd.rect)
@@ -184,7 +184,7 @@ class Olympus(Phase):
 
     def __init__(self, director, player):
         super().__init__(director)
-        
+
         GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
         pygame.mixer.music.set_volume(Config.musicVolume)
         pygame.mixer.music.play()
@@ -208,16 +208,16 @@ class Olympus(Phase):
         if player == "Hera":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Demeter":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Demeter(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hestia":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Hestia(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Zeus":
             self.player = Zeus(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hades":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Hades(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Poseidon":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        
+            self.player = Poseidon(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+
 
 
     def update(self, time):
@@ -236,7 +236,7 @@ class SubTemple(Phase):
 
     def __init__(self, director, player):
         super().__init__(director)
-        
+
         GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
         pygame.mixer.music.set_volume(Config.musicVolume)
         pygame.mixer.music.play()
@@ -274,7 +274,7 @@ class SubTemple(Phase):
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Poseidon":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        
+
 
     def update(self, time):
         super().updateScroll()
@@ -287,7 +287,7 @@ class SubTemple(Phase):
             self.director.changeScene(CharacterSelectionMenu(self.director))
 
 
-    
+
 
 
 class Menu(Scene):
@@ -328,7 +328,7 @@ class Menu(Scene):
 
     def changeToOptions(self):
         self.currentScreen = 1
-        
+
     def showScreen(self):
         self.currentScreen = 0
     # def mostrarPantallaConfiguracion(self):
@@ -404,7 +404,7 @@ class CharacterSelectionMenu(Scene):
 
     def changeToOptions(self):
         self.currentScreen = 1
-        
+
     def showScreen(self):
         self.currentScreen = 0
     # def mostrarPantallaConfiguracion(self):
@@ -446,6 +446,6 @@ class LevelSelectionMenu(Scene):
     def characterSelect(self, level):
         self.level = level
         self.currentScreen = 1
-        
+
     def showScreen(self):
         self.currentScreen = 0
