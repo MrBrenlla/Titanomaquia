@@ -1,3 +1,4 @@
+from turtle import Screen
 import pygame
 from pygame.locals import *
 from gestorRecursos import *
@@ -13,11 +14,12 @@ from config import *
 STATIC_GROUP = 0
 INTERACTABLE_GROUP = 1
 DESTRUCTABLE_GROUP = 2
-BACKGROUND = 3
-PLAYER_POS = 4
-SCROLL = 5
-DOORS = 6
-LEVEL_PROGRESSION = 7
+ENEMY_GROUP = 3
+BACKGROUND = 4
+PLAYER_POS = 5
+SCROLL = 6
+DOORS = 7
+LEVEL_PROGRESSION = 8
 
 class Scene():
     def __init__(self, director):
@@ -125,6 +127,8 @@ class Phase(Scene):
         staticGroup = pygame.sprite.Group()
         interactableGroup = pygame.sprite.Group()
         destructableGroup = pygame.sprite.Group()
+        enemyGroup = pygame.sprite.Group()
+        playerPos = (300, 500)
         levelScroll = [0, 0]
         doorArray = []
         levelProgression = 0
@@ -176,8 +180,21 @@ class Phase(Scene):
                     door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl)
                     interactableGroup.add(door)
                     doorArray.append(door)
+                elif level[i][j] == "B":
+                    wall = Wall((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    interactableGroup.add(wall)
+                elif level[i][j] == "H":
+                    key = Key((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
+                    interactableGroup.add(key)
+                elif level[i][j] == "D":
+                    npc = NPC((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), guard)
+                    guard += 1
+                    interactableGroup.add(npc)
+                elif level[i][j] == "J":
+                    enemy = Mermaids((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10))
+                    enemyGroup.add(enemy)
 
-        return [staticGroup, interactableGroup, destructableGroup, bgd, playerPos, levelScroll, doorArray, levelProgression]
+        return [staticGroup, interactableGroup, destructableGroup, enemyGroup, bgd, playerPos, levelScroll, doorArray, levelProgression]
 
 
 class Olympus(Phase):
@@ -211,13 +228,6 @@ class Olympus(Phase):
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hestia":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        elif player == "Zeus":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        elif player == "Hades":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        elif player == "Poseidon":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
-        
 
 
     def update(self, time):
@@ -274,11 +284,35 @@ class SubTemple(Phase):
         super().updateScroll()
         super().playerLimits()
         self.player.update(self.screens[self.currentLevel][STATIC_GROUP])
-
-        #condicion de fin de nivel
+        for s in self.screens[self.currentLevel][ENEMY_GROUP]:
+            s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
             Config.availableCharacters.append("Poseidon")
             self.director.changeScene(CharacterSelectionMenu(self.director))
+
+
+    def draw(self, screen):
+
+        if self.changeLevel:
+            self.clearScreen(screen)
+
+            self.changeLevel = False
+
+        screen.blit(self.screens[self.currentLevel][BACKGROUND].image, (self.screens[self.currentLevel][BACKGROUND].rect.x-self.scroll[0],self.screens[self.currentLevel][BACKGROUND].rect.y-self.scroll[1]))
+
+        for s in self.screens[self.currentLevel][STATIC_GROUP].sprites():
+            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
+
+        for s in self.screens[self.currentLevel][INTERACTABLE_GROUP].sprites():
+            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
+
+        for s in self.screens[self.currentLevel][DESTRUCTABLE_GROUP].sprites():
+            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
+
+        for s in self.screens[self.currentLevel][ENEMY_GROUP].sprites():
+            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
+
+        self.player.draw(screen, self.scroll)
 
 
     

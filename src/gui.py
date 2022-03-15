@@ -288,3 +288,20 @@ class LevelSelectionScreen(GUIScreen):
             selection = SelectLevelButton(self, f"Menu/{Config.availableLevels[1]}Menu.png", (640+228, 420), Config.availableLevels[1])
             self.GUIElements.append(selection)
             self.GUIElements.append(text)
+
+class LifeGUI(GUIElement):
+    def __init__(self, screen, image, position, size):
+
+        self.image = GestorRecursos.CargarImagen(image, -1)
+        self.image = pygame.transform.scale(self.image, size)
+        super().__init__(screen, self.image.get_rect())
+
+        self.setPosition(position)
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+
+
+class InGameGUI(GUIScreen):
+    def __init__(self, menu):
+        pass

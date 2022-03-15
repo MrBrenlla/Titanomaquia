@@ -5,11 +5,12 @@ from config import *
 STATIC_GROUP = 0
 INTERACTABLE_GROUP = 1
 DESTRUCTABLE_GROUP = 2
-BACKGROUND = 3
-PLAYER_POS = 4
-SCROLL = 5
-DOORS = 6
-LEVEL_PROGRESSION = 7
+ENEMY_GROUP = 3
+BACKGROUND = 4
+PLAYER_POS = 5
+SCROLL = 6
+DOORS = 7
+LEVEL_PROGRESSION = 8
 
 #Clase plantilla mysprite
 class MySprite(pygame.sprite.Sprite):

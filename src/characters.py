@@ -169,8 +169,12 @@ class God(Character):
     def __init__(self, spriteSheet, coords, x, y):
         Character.__init__(self, spriteSheet, coords, x, y)
         self.name=""
+        self.observers = []
 
-
+    def addObserver(self,observer):
+        if observer not in self.observers:
+           self.observers.append(observer)
+           
     def attack(self, destructable, eventList):
 
         for event in eventList:
@@ -218,9 +222,17 @@ class God(Character):
 
     def interact(self, interactables, level):
         interact_collider = pygame.sprite.spritecollideany(self, interactables)
-
         if (interact_collider != None):
             interact_collider.interact(level)
+
+    def TakeDamage(self, enemies):
+        interact_collider = pygame.sprite.spritecollideany(self, enemies)
+        if (interact_collider != None):
+            for s in self.observers:
+                s.notify
+
+        
+    
 
 
 
@@ -261,7 +273,7 @@ class NoPlayer(Character):
 
 class NPC(NoPlayer):
     def __init__(self, x, y, guard):
-        MySprite.__init__(self)
+        NoPlayer.__init__(self)
         self.image = GestorRecursos.CargarImagen('NPC/guardia2.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
@@ -279,8 +291,27 @@ class NPC(NoPlayer):
 
 
 class Enemy(NoPlayer):
-    def __init__(self):
-        MySprite.__init__(self)
+    def __init__(self,spriteSheet,x,y):
+        NoPlayer.__init__(self)
+        self.image = GestorRecursos.CargarImagen('NPC/' + spriteSheet, -1)
+        # self.sheet = self.sheet.convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.vel = (5, 20)
+        self.firstApparition = False
+        self.direction = True
+
+    def move(self, right):
+        self.velX = 0
+        if right:
+            self.rect.x += self.vel[0]
+        else:
+            self.rect.x -= self.vel[0]
+    
+    def move_enemy(self):
+        return
+
 
 #Clases bosses y enemigos
 
@@ -294,4 +325,23 @@ class Telchines(Enemy):
     pass
 
 class Mermaids(Enemy):
-    pass
+    def __init__(self,x,y):
+        Enemy.__init__(self,"Mermaid1.png",x,y)
+    
+    def move_enemy(self,level,static_group):
+        spriteCollide = pygame.sprite.spritecollide(self, static_group, False)
+        if not(self.firstApparition):
+            if self.rect.left>0 and self.rect.right<(level.screenWidth+level.scroll[0]+20) and self.rect.bottom+10>0 and self.rect.top<(level.screenHeight+level.scroll[1]):
+                self.firstApparition=True
+        else:
+            if (spriteCollide == []):
+                self.direction = not(self.direction)
+            if(self.rect.left<50):
+                self.direction = True
+            if(self.rect.right>(level.levelSize[level.currentLevel][0]*128)-50):
+                self.direction = False
+            Enemy.move(self,self.direction)
+            # print(self.rect.left, " ", self.rect.right, spriteCollide)
+            
+
+        return
