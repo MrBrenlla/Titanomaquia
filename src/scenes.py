@@ -116,7 +116,7 @@ class Phase(Scene):
         #leemos el txt para saber que elemetos colocar
         level = GestorRecursos.CargarNivelTxt(f"{lvlName}/{txt}")
         level = level.split("\n")
-        
+
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl, lvlName)
         # print(bgd.rect)
@@ -136,7 +136,7 @@ class Phase(Scene):
         for i in range(l):
             for j in range(len(level[0])):
                 if level[i][j] == "A":
-                    floor = Floor((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    floor = Floor((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight),lvlName)
                     # floorGroup.add(floor)
                     staticGroup.add(floor)
                 elif level[i][j] == "B": #Vasija que contiene hidromiel
@@ -154,14 +154,14 @@ class Phase(Scene):
                     guard += 1
                     interactableGroup.add(npc)
                 elif level[i][j] == "E":
-                    platform = Platform((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    platform = Platform((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight),lvlName)
                     # platformGroup.add(platform)
                     staticGroup.add(platform)
                 elif level[i][j] == "F":
                     offset = 0
                     if lvlName == "Olimpo":
                         offset = self.tileSize/2
-                    door = Door((j*self.tileSize), (i*self.tileSize - offset)-(l*self.tileSize-self.screenHeight), doors, lvl)
+                    door = Door((j*self.tileSize), (i*self.tileSize - offset)-(l*self.tileSize-self.screenHeight), doors, lvl,lvlName)
                     doors += 1
                     doorArray.append(door)
                     interactableGroup.add(door)
@@ -177,7 +177,7 @@ class Phase(Scene):
                     door = PracticeGuard((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(door)
                 elif level[i][j] == "L":
-                    door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl)
+                    door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl,lvlName)
                     interactableGroup.add(door)
                     doorArray.append(door)
                 elif level[i][j] == "B":
@@ -201,7 +201,7 @@ class Olympus(Phase):
 
     def __init__(self, director, player):
         super().__init__(director)
-        
+
         GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
         pygame.mixer.music.set_volume(Config.musicVolume)
         pygame.mixer.music.play()
@@ -225,9 +225,17 @@ class Olympus(Phase):
         if player == "Hera":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Demeter":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Demeter(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hestia":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Hestia(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Zeus":
+            self.player = Zeus(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Hades":
+            self.player = Hades(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Poseidon":
+            self.player = Poseidon(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+
 
 
     def update(self, time):
@@ -246,7 +254,7 @@ class SubTemple(Phase):
 
     def __init__(self, director, player):
         super().__init__(director)
-        
+
         GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
         pygame.mixer.music.set_volume(Config.musicVolume)
         pygame.mixer.music.play()
@@ -277,6 +285,12 @@ class SubTemple(Phase):
         elif player == "Demeter":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hestia":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Zeus":
+            self.player = Zeus(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Hades":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Poseidon":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
 
 
@@ -318,6 +332,7 @@ class SubTemple(Phase):
     
 
 
+
 class Menu(Scene):
     def __init__(self, director):
         super().__init__(director)
@@ -356,7 +371,7 @@ class Menu(Scene):
 
     def changeToOptions(self):
         self.currentScreen = 1
-        
+
     def showScreen(self):
         self.currentScreen = 0
     # def mostrarPantallaConfiguracion(self):
@@ -432,7 +447,7 @@ class CharacterSelectionMenu(Scene):
 
     def changeToOptions(self):
         self.currentScreen = 1
-        
+
     def showScreen(self):
         self.currentScreen = 0
     # def mostrarPantallaConfiguracion(self):
@@ -474,6 +489,6 @@ class LevelSelectionMenu(Scene):
     def characterSelect(self, level):
         self.level = level
         self.currentScreen = 1
-        
+
     def showScreen(self):
         self.currentScreen = 0

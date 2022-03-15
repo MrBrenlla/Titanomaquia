@@ -168,6 +168,7 @@ class LevelText(GUIText):
     def __init__(self, screen, level, pos):
         font = pygame.font.Font('Fonts/OLYMB.ttf', 40)
         super().__init__(screen, font, (255, 255, 255), level, pos)
+        self.level = level
 
     def action(self):
         self.screen.menu.characterSelect(self.level)

@@ -171,31 +171,13 @@ class God(Character):
         self.name=""
         self.observers = []
 
+
     def addObserver(self,observer):
         if observer not in self.observers:
            self.observers.append(observer)
            
     def attack(self, destructable, eventList):
 
-        for event in eventList:
-            if event.type == KEYDOWN and event.key == K_SPACE:
-                if not self.attacking:
-                    #son_attak = GestorRecursos.CargarSonido(self.name + "/ataque.wav",False)
-                    son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.wav",False)
-                    son_attack.set_volume(Config.effectsVolume)
-                    son_attack.play()
-                    self.frame = 0
-
-                    self.attacking = True
-            #Character.currentAnim=SPRITE_ATTACK
-
-        dropItems = []
-        for obj in destructable:
-            hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
-            if hit:
-                dropItems.append(obj.damage())
-
-        return dropItems
 
     def move(self, keys, up, right, left):
         self.velX = 0
@@ -231,37 +213,103 @@ class God(Character):
             for s in self.observers:
                 s.notify
 
+class GodMelee(God):
         
     
+
+    def __init__(self, spriteSheet, coords, x, y):
+        Character.__init__(self, spriteSheet, coords, x, y)
+        self.name=""
+
+
+    def attack(self, destructable, eventList):
+
+        for event in eventList:
+            if event.type == KEYDOWN and event.key == K_SPACE:
+                if not self.attacking:
+                    #son_attak = GestorRecursos.CargarSonido(self.name + "/ataque.wav",False)
+                    son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.wav",False)
+                    son_attack.set_volume(Config.effectsVolume)
+                    son_attack.play()
+                    self.frame = 0
+
+                    self.attacking = True
+            #Character.currentAnim=SPRITE_ATTACK
+
+        dropItems = []
+        for obj in destructable:
+            hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
+            if hit:
+                dropItems.append(obj.damage())
+
+        return dropItems
+
+
+class GodRange(God):
+    def __init__(self, spriteSheet, coords, x, y):
+        God.__init__(self, spriteSheet, coords, x, y)
+        self.name=""
+        self.coords = coords
+        self.proyectiles = []
+
+
+    def attack(self, destructable, eventList):
+
+        for event in eventList:
+            if event.type == KEYDOWN and event.key == K_SPACE:
+                if not self.attacking:
+                    son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.wav",False)
+                    son_attack.set_volume(Config.effectsVolume)
+                    son_attack.play()
+                    self.frame = 0
+
+                    self.attacking = True
+                    proyectile = Proyectile (self.rect.x, self.rect.y, type(self).__name__)
+                    self.proyectiles.append(proyectile)
+
+        dropItems = []
+        for obj in destructable:
+            hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
+            if hit:
+                dropItems.append(obj.damage())
+
+        return dropItems
+
+    def draw(self, screen, newScroll):
+        Character.draw(self, screen, newScroll)
+        for i in self.proyectiles:
+            i.dropProyectile(screen)
 
 
 
 
 #Clases de cada dios
-class Zeus(God):
-    def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y,)
 
-class Hera(God):
+class Zeus(GodRange):
+    def __init__(self, x, y):
+        GodRange.__init__(self, "zeus.png", "zeus.txt", x, y,)
+
+class Hera(GodMelee):
     def __init__(self, x, y):
         God.__init__(self, "hera.png", "hera.txt", x, y,)
         God.setMeleeRange(self, 55, 60)
         self.name = "Hera"
 
 
-class Hestia(God):
+class Hestia(GodRange):
+    def __init__(self, x, y):
+        GodRange.__init__(self, "hera.png", "hera.txt", x, y,)
+
+
+class Poseidon(GodRange):
     def __init__(self, x, y):
         God.__init__(self, "hera.png", "hera.txt", x, y,)
 
-class Poseidon(God):
+class Hades(GodMelee):
     def __init__(self, x, y):
         God.__init__(self, "hera.png", "hera.txt", x, y,)
 
-class Hades(God):
-    def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y,)
-
-class Demeter(God):
+class Demeter(GodMelee):
     def __init__(self, x, y):
         God.__init__(self, "hera.png", "hera.txt", x, y,)
 
