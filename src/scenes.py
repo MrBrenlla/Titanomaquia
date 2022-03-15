@@ -132,7 +132,7 @@ class Phase(Scene):
         for i in range(l):
             for j in range(len(level[0])):
                 if level[i][j] == "A":
-                    floor = Floor((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    floor = Floor((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight),lvlName)
                     # floorGroup.add(floor)
                     staticGroup.add(floor)
                 elif level[i][j] == "B": #Vasija que contiene hidromiel
@@ -150,14 +150,14 @@ class Phase(Scene):
                     guard += 1
                     interactableGroup.add(npc)
                 elif level[i][j] == "E":
-                    platform = Platform((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    platform = Platform((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight),lvlName)
                     # platformGroup.add(platform)
                     staticGroup.add(platform)
                 elif level[i][j] == "F":
                     offset = 0
                     if lvlName == "Olimpo":
                         offset = self.tileSize/2
-                    door = Door((j*self.tileSize), (i*self.tileSize - offset)-(l*self.tileSize-self.screenHeight), doors, lvl)
+                    door = Door((j*self.tileSize), (i*self.tileSize - offset)-(l*self.tileSize-self.screenHeight), doors, lvl,lvlName)
                     doors += 1
                     doorArray.append(door)
                     interactableGroup.add(door)
@@ -173,7 +173,7 @@ class Phase(Scene):
                     door = PracticeGuard((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(door)
                 elif level[i][j] == "L":
-                    door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl)
+                    door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl,lvlName)
                     interactableGroup.add(door)
                     doorArray.append(door)
 
