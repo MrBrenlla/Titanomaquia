@@ -19,7 +19,7 @@ SPRITE_ATTACK = 5
 
 #Clase generica Personaje
 class Character(MySprite):
-    def __init__(self, spriteSheet, coords, x, y):
+    def __init__(self, spriteSheet, coords, x, y, animFrames):
         MySprite.__init__(self)
         self.pos = (x, y)
         self.vel = (7, 20)
@@ -39,8 +39,8 @@ class Character(MySprite):
         datos = GestorRecursos.CargarArchivoCoordenadas('Dioses/' + coords)
         datos = datos.split()
 
-        #Array con el numero de frames de cada animacion
-        self.animFrames = [4, 1, 4, 5, 1, 5]
+        #Array con el numero de frames de cada animacion [4, 1, 4, 5, 1, 5]
+        self.animFrames = animFrames
         #Array con los rects de las animaciones
         self.anims = []
 
@@ -63,7 +63,7 @@ class Character(MySprite):
 
         #valores iniciales
 
-        self.rect = pygame.Rect(x, y, 44, self.anims[self.currentAnim][self.frame][3])
+        self.rect = pygame.Rect(x, y, 44, 80)
         self.attackRect = pygame.Rect(0, 0, 0, 0)
         self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
 
@@ -161,13 +161,13 @@ class Character(MySprite):
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x -22 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
         #pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
-        #pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
+        pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
 #Clase plantilla dioses
 class God(Character):
-    def __init__(self, spriteSheet, coords, x, y):
-        Character.__init__(self, spriteSheet, coords, x, y)
+    def __init__(self, spriteSheet, coords, x, y, animFrames):
+        Character.__init__(self, spriteSheet, coords, x, y, animFrames)
         self.name=""
 
 
@@ -228,13 +228,12 @@ class God(Character):
 #Clases de cada dios
 class Zeus(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y,)
+        God.__init__(self, "zeus.png", "zeus.txt", x, y, [4, 1, 4, 7, 1, 4])
 
 class Hera(God):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y,)
+        God.__init__(self, "hera.png", "hera.txt", x, y, [4, 1, 4, 5, 1, 5])
         God.setMeleeRange(self, 55, 60)
-        self.name = "Hera"
 
 
 class Hestia(God):
