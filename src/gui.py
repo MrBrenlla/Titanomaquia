@@ -303,14 +303,14 @@ class LifeGUI(HUD):
         self.sheet = GestorRecursos.CargarImagen('HUD/' + spriteSheet, -1)
         self.sheet = self.sheet.convert_alpha()
         self.coords = GestorRecursos.CargarArchivoCoordenadas('HUD/' + coordstxt)
-        self.currentCoord = 0
+        self.MaxCoord = 3
         self.coords = self.coords.splitlines()
 
         for d in range(0, len(self.coords)):
             self.datos.append(list(map(int, self.coords[d].split())))
             
         
-        self.image = self.sheet.subsurface(self.datos[self.currentCoord])
+        self.image = self.sheet.subsurface(self.datos[0])
         #self.image = GestorRecursos.CargarImagen('HUD/' + spriteSheet, -1)
 
         super().__init__(self.image.get_rect())
@@ -320,17 +320,10 @@ class LifeGUI(HUD):
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def notify(self,disminuye):
-        if(disminuye):
-            if(self.currentCoord < 3):
-                self.currentCoord +=1
-                self.image = self.sheet.subsurface(self.datos[self.currentCoord])
-        else:
-            print(self.currentCoord)
-            if(self.currentCoord >= 0):
-                self.currentCoord -=1
-                
-                self.image = self.sheet.subsurface(self.datos[self.currentCoord])
+    def notify(self,player):
+        self.MaxCoord = 3
+        currentCoord = self.MaxCoord - player.lifes
+        self.image = self.sheet.subsurface(self.datos[currentCoord])
 
 class InGameGUI(GUIScreen):
     def __init__(self, menu):

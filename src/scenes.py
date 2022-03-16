@@ -339,8 +339,6 @@ class SubTemple(Phase):
         self.player.draw(screen, self.scroll)
 
 
-    
-
 
 
 class Menu(Scene):

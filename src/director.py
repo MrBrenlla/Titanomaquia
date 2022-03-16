@@ -34,7 +34,7 @@ class Director():
     def execute(self):
         while(len(self.scenes) > 0):
             #Ejecutamos el bucle hasta que termina la escena de la pila
-            print(self.scenes)
+            #print(self.scenes)
             self.gameLoop(self.scenes[len(self.scenes)-1])
 
     def exitScene(self):

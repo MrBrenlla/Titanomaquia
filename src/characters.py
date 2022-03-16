@@ -214,7 +214,15 @@ class God(Character):
     def interact(self, interactables, level):
         interact_collider = pygame.sprite.spritecollideany(self, interactables)
         if (interact_collider != None):
-            interact_collider.interact(level)
+            if (isinstance(interact_collider, Mead)):
+                if (self.lifes<3):
+                    print(self.lifes)
+                    self.lifes += 1
+                    for s in self.observers:
+                        s.notify(self)
+                    interact_collider.interact(level)
+            else:
+                interact_collider.interact(level)
 
     def TakeDamage(self, enemies):
         interact_collider = pygame.sprite.spritecollideany(self, enemies)
@@ -224,7 +232,7 @@ class God(Character):
                 pygame.time.set_timer(self.invencibilityCD, self.timeVulnerability)
                 self.lifes -= 1
                 for s in self.observers:
-                    s.notify(1)
+                    s.notify(self)
                 
                 if (self.lifes == 0):
                     self.frame=0
@@ -235,8 +243,6 @@ class God(Character):
         self.TakeDamage(enemies)
 
 class GodMelee(God):
-        
-    
 
     def __init__(self, spriteSheet, coords, x, y):
         Character.__init__(self, spriteSheet, coords, x, y)
