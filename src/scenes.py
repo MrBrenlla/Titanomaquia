@@ -122,7 +122,7 @@ class Phase(Scene):
         #leemos el txt para saber que elemetos colocar
         level = GestorRecursos.CargarNivelTxt(f"{lvlName}/{txt}")
         level = level.split("\n")
-
+        subLevel = txt.split(".")[0]
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl, lvlName)
         # print(bgd.rect)
@@ -134,7 +134,6 @@ class Phase(Scene):
         interactableGroup = pygame.sprite.Group()
         destructableGroup = pygame.sprite.Group()
         enemyGroup = pygame.sprite.Group()
-        playerPos = (300, 500)
         levelScroll = [0, 0]
         doorArray = []
         levelProgression = 0
@@ -156,7 +155,7 @@ class Phase(Scene):
                     # vaseGroup.add(vase)
                     destructableGroup.add(vase)
                 elif level[i][j] == "D":
-                    npc = NPC((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), guard)
+                    npc = NPC((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), guard, lvlName, subLevel)
                     guard += 1
                     interactableGroup.add(npc)
                 elif level[i][j] == "E":
@@ -182,23 +181,13 @@ class Phase(Scene):
                 elif level[i][j] == "I":
                     door = PracticeGuard((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(door)
+                elif level[i][j] == "J":
+                    enemy = Mermaids((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10))
+                    enemyGroup.add(enemy)
                 elif level[i][j] == "L":
                     door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl,lvlName)
                     interactableGroup.add(door)
                     doorArray.append(door)
-                elif level[i][j] == "B":
-                    wall = Wall((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
-                    interactableGroup.add(wall)
-                elif level[i][j] == "H":
-                    key = Key((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
-                    interactableGroup.add(key)
-                elif level[i][j] == "D":
-                    npc = NPC((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), guard)
-                    guard += 1
-                    interactableGroup.add(npc)
-                elif level[i][j] == "J":
-                    enemy = Mermaids((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10))
-                    enemyGroup.add(enemy)
 
         return [staticGroup, interactableGroup, destructableGroup, enemyGroup, bgd, playerPos, levelScroll, doorArray, levelProgression]
 
@@ -234,7 +223,6 @@ class Olympus(Phase):
         elif player == "Demeter":
             self.player = Demeter(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hestia":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
             self.player = Hestia(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Zeus":
             self.player = Zeus(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
@@ -252,7 +240,9 @@ class Olympus(Phase):
         self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP])
         for s in self.screens[self.currentLevel][ENEMY_GROUP]:
             s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
-
+        if (self.player.lifes == 0 and self.player.currentAnim == SPRITE_LET_DYING):
+            #lanzar la escena de muerte
+            self.director.changeScene(Menu(self.director))
         #condicion de fin de nivel
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
             Config.availableCharacters.append("Zeus")
@@ -279,12 +269,14 @@ class SubTemple(Phase):
 
         self.playerName = player
 
+        self.LifeGUI = LifeGUI("Barra de vida.png","VidaCoords.txt")
+        self.sand = Sand(0, -512)
         #grupos
 
         for level in range(len(self.levels)):
             # print(level)
             if level == 0:
-                playerPos = (200, -908)
+                playerPos = (200, -520)
             elif level == 2:
                 playerPos = (3900, 500)
             else:
@@ -303,40 +295,32 @@ class SubTemple(Phase):
         elif player == "Poseidon":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
 
+        self.player.addObserver(self.LifeGUI)
+
+        self.screens[self.currentLevel][STATIC_GROUP].add(self.sand)
 
     def update(self, time):
         super().updateScroll()
         super().playerLimits()
-        self.player.update(self.screens[self.currentLevel][STATIC_GROUP])
+        self.player.update(self.screens[self.currentLevel][STATIC_GROUP], self.screens[self.currentLevel][ENEMY_GROUP])
         for s in self.screens[self.currentLevel][ENEMY_GROUP]:
             s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
+        #lose condition
+        if (self.player.lifes == 0 and self.player.currentAnim == SPRITE_LET_DYING):
+            #lanzar la escena de muerte
+            self.director.changeScene(Menu(self.director))
+        
+        #sand control
+        if (self.screens[1][LEVEL_PROGRESSION] == 1):
+            sandPos = 0
+            if (self.screens[3][LEVEL_PROGRESSION] == 1):
+                sandPos = 512
+            self.sand.rect.y = sandPos
+
+        #win condition
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
             Config.availableCharacters.append("Poseidon")
             self.director.changeScene(CharacterSelectionMenu(self.director))
-
-
-    def draw(self, screen):
-
-        if self.changeLevel:
-            self.clearScreen(screen)
-
-            self.changeLevel = False
-
-        screen.blit(self.screens[self.currentLevel][BACKGROUND].image, (self.screens[self.currentLevel][BACKGROUND].rect.x-self.scroll[0],self.screens[self.currentLevel][BACKGROUND].rect.y-self.scroll[1]))
-
-        for s in self.screens[self.currentLevel][STATIC_GROUP].sprites():
-            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-
-        for s in self.screens[self.currentLevel][INTERACTABLE_GROUP].sprites():
-            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-
-        for s in self.screens[self.currentLevel][DESTRUCTABLE_GROUP].sprites():
-            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-
-        for s in self.screens[self.currentLevel][ENEMY_GROUP].sprites():
-            screen.blit(s.image,(s.rect.x-self.scroll[0],s.rect.y-self.scroll[1]))
-
-        self.player.draw(screen, self.scroll)
 
 
 

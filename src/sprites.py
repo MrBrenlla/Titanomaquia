@@ -1,3 +1,4 @@
+from operator import sub
 import pygame
 from gestorRecursos import *
 from config import *
@@ -44,14 +45,17 @@ class Floor(MySprite):
         self.rect.y = y
 
 class Dialog(MySprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, dialog, lvlName, subLevel):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen('Olimpo/Texto1.png', -1)
+        self.image = GestorRecursos.CargarImagen(f'{lvlName}/{subLevel}/Texto{dialog}.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def interact(self, level):
+        pass
 
 class Key(MySprite):
     "Los Sprites que tendra este juego"
@@ -181,15 +185,23 @@ class Mead(MySprite):
 
 
 class Proyectile(MySprite):
-    def __init(self,x,y,nameGod):
+    def __init__(self,x,y,nameGod):
         MySprite.__init__(self)
-        self.image = GestorRecursos.CargarImagen('/Proyectiles/proyectil_hestia.png', -1)
-        self.posX = x
-        self.posY = y
+        self.image = GestorRecursos.CargarImagen('Proyectil/proyectil_hestia.png', -1)
         self.vel = 10
         self.damage = 10
         self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-    def dropProyectile(self, screen):
-        screen.blit(self.image, self.rect)
+    def moveProyectile(self):
         self.rect.x += self.vel
+
+
+class Sand(MySprite):
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        self.image = GestorRecursos.CargarImagen('TemploSubmarino/arena.png', -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y

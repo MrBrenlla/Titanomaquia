@@ -19,7 +19,7 @@ SPRITE_ATTACK = 5
 # TODO: Crear una funcion muerte y posiblemente llamarla en escenas en vez del update y tal
 #Clase generica Personaje
 class Character(MySprite):
-    def __init__(self, spriteSheet, coords, x, y):
+    def __init__(self, spriteSheet, coords, x, y, animFrames):
         MySprite.__init__(self)
         self.pos = (x, y)
         self.vel = (7, 20)
@@ -42,7 +42,7 @@ class Character(MySprite):
         datos = datos.split()
 
         #Array con el numero de frames de cada animacion
-        self.animFrames = [4, 1, 4, 5, 1, 5]
+        self.animFrames = animFrames
         #Array con los rects de las animaciones
         self.anims = []
 
@@ -65,7 +65,7 @@ class Character(MySprite):
 
         #valores iniciales
 
-        self.rect = pygame.Rect(x, y, 44, self.anims[self.currentAnim][self.frame][3])
+        self.rect = pygame.Rect(x, y, 44, 80)
         self.attackRect = pygame.Rect(0, 0, 0, 0)
         self.image = self.sheet.subsurface(self.anims[self.currentAnim][self.frame])
 
@@ -102,11 +102,6 @@ class Character(MySprite):
 
         # self.rect.bottom = self.rect.y
 
-
-    def setMeleeRange(self, width, height):
-        self.attackRangeWidth = width
-        self.attackRangeHeight = height
-
     def update(self, static):
 
         if (self.lifes>0):
@@ -131,14 +126,15 @@ class Character(MySprite):
 
             if (self.attacking):
                 self.currentAnim=SPRITE_ATTACK
+                print(self.anims[self.currentAnim])
                 if self.right:
-                    self.attackRect.x = self.rect.x + self.rect.width
+                    self.attackRect.x = self.rect.x + self.attackRangeWidth
                 else:
                     self.attackRect.x = self.rect.x - self.attackRangeWidth
                 self.attackRect.y = self.rect.y
                 self.attackRect.width = self.attackRangeWidth
                 self.attackRect.height = self.attackRangeHeight
-                if (self.frame>=4):
+                if (self.frame>=self.animFrames[self.currentAnim] - 1):
                     self.attacking = False
                     self.attackRect = pygame.Rect(0, 0, 0, 0)
         else:
@@ -165,14 +161,14 @@ class Character(MySprite):
 
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x -22 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
-        #pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
-        #pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
+        pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
+        # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
 #Clase plantilla dioses
 class God(Character):
-    def __init__(self, spriteSheet, coords, x, y):
-        Character.__init__(self, spriteSheet, coords, x, y)
+    def __init__(self, spriteSheet, coords, x, y, animFrames):
+        Character.__init__(self, spriteSheet, coords, x, y, animFrames)
         self.name=""
         self.observers = []
         self.invencibilityCD = pygame.USEREVENT + 1
@@ -185,7 +181,7 @@ class God(Character):
            self.observers.append(observer)
            
     def attack(self, destructable, eventList):
-        pass
+        raise NotImplemented("Tiene que implementar el metodo attack.")
 
     def move(self, keys, up, right, left):
         self.velX = 0
@@ -205,11 +201,11 @@ class God(Character):
         #        Character.move(self,UP)
                 self.jumpVel = -self.vel[1]
                 self.jumping = True
-            #aplicamos gravedad
-            self.jumpVel += 1
-            #velocidad terminal
-            if self.jumpVel > 15:
-                self.jumpVel = 15
+        #aplicamos gravedad
+        self.jumpVel += 1
+        #velocidad terminal
+        if self.jumpVel > 15:
+            self.jumpVel = 15
 
     def interact(self, interactables, level):
         interact_collider = pygame.sprite.spritecollideany(self, interactables)
@@ -230,10 +226,11 @@ class God(Character):
             if (not(self.invencibility)):
                 self.invencibility = True
                 pygame.time.set_timer(self.invencibilityCD, self.timeVulnerability)
-                self.lifes -= 1
-                for s in self.observers:
-                    s.notify(self)
-                
+                if self.lifes > 0:
+                    self.lifes -= 1
+                    for s in self.observers:
+                        s.notify(self)
+                    
                 if (self.lifes == 0):
                     self.frame=0
                     self.currentAnim=SPRITE_DYING
@@ -244,10 +241,13 @@ class God(Character):
 
 class GodMelee(God):
 
-    def __init__(self, spriteSheet, coords, x, y):
-        Character.__init__(self, spriteSheet, coords, x, y)
-        self.name=""
+    def __init__(self, spriteSheet, coords, x, y, animFrames):
+        God.__init__(self, spriteSheet, coords, x, y, animFrames)
+        
 
+    def setMeleeRange(self, width, height):
+        self.attackRangeWidth = width
+        self.attackRangeHeight = height
 
     def attack(self, destructable, eventList):
 
@@ -273,11 +273,13 @@ class GodMelee(God):
 
 
 class GodRange(God):
-    def __init__(self, spriteSheet, coords, x, y):
-        God.__init__(self, spriteSheet, coords, x, y)
+    def __init__(self, spriteSheet, coords, x, y, animFrames):
+        God.__init__(self, spriteSheet, coords, x, y, animFrames)
         self.name=""
         self.coords = coords
-        self.proyectiles = []
+        self.attackRangeHeight = 0
+        self.attackRangeWidth = 0
+        self.proyectiles = pygame.sprite.Group()
 
 
     def attack(self, destructable, eventList):
@@ -291,8 +293,8 @@ class GodRange(God):
                     self.frame = 0
 
                     self.attacking = True
-                    proyectile = Proyectile (self.rect.x, self.rect.y, type(self).__name__)
-                    self.proyectiles.append(proyectile)
+                    proyectile = Proyectile(self.rect.x, self.rect.y, type(self).__name__)
+                    self.proyectiles.add(proyectile)
 
         dropItems = []
         for obj in destructable:
@@ -302,24 +304,28 @@ class GodRange(God):
 
         return dropItems
 
+
+    def update(self, static, enemies):
+        super().update(static, enemies)
+        for i in self.proyectiles:
+            i.moveProyectile()
+
     def draw(self, screen, newScroll):
         Character.draw(self, screen, newScroll)
-        for i in self.proyectiles:
-            i.dropProyectile(screen)
-
-
+        for s in self.proyectiles.sprites():
+            screen.blit(s.image,(s.rect.x-newScroll[0],s.rect.y-newScroll[1]))
 
 
 #Clases de cada dios
 
 class Zeus(GodRange):
     def __init__(self, x, y):
-        GodRange.__init__(self, "zeus.png", "zeus.txt", x, y,)
+        GodRange.__init__(self, "zeus.png", "zeus.txt", x, y, [4, 1, 4, 7, 1, 4])
 
 class Hera(GodMelee):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y,)
-        God.setMeleeRange(self, 55, 60)
+        GodMelee.__init__(self, "hera.png", "hera.txt", x, y, [4, 1, 4, 5, 1, 5])
+        self.setMeleeRange(55, 60)
         self.name = "Hera"
 
 
@@ -347,7 +353,7 @@ class NoPlayer(Character):
         MySprite.__init__(self)
 
 class NPC(NoPlayer):
-    def __init__(self, x, y, guard):
+    def __init__(self, x, y, guard, lvlName, subLevel):
         NoPlayer.__init__(self)
         self.image = GestorRecursos.CargarImagen('NPC/guardia2.png', -1)
         # El rectangulo donde estara la imagen
@@ -355,11 +361,13 @@ class NPC(NoPlayer):
         self.rect.x = x
         self.rect.y = y
         self.guard = guard
+        self.lvlName = lvlName
+        self.subLevel = subLevel
 
 
     def interact(self, level):
         if (level.screens[level.currentLevel][LEVEL_PROGRESSION] == self.guard) and ((not level.screens[self.guard][DOORS][-1].closed) or self.guard == 0):
-            level.screens[level.currentLevel][STATIC_GROUP].add(Dialog(self.rect.x - 60, self.rect.y - 256))
+            level.screens[level.currentLevel][INTERACTABLE_GROUP].add(Dialog(self.rect.x - 60, self.rect.y - 256, self.guard + 1, self.lvlName, self.subLevel))
 
             level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
             level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
