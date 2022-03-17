@@ -179,7 +179,7 @@ class God(Character):
     def addObserver(self,observer):
         if observer not in self.observers:
            self.observers.append(observer)
-           
+
     def attack(self, destructable, eventList):
         raise NotImplemented("Tiene que implementar el metodo attack.")
 
@@ -230,7 +230,7 @@ class God(Character):
                     self.lifes -= 1
                     for s in self.observers:
                         s.notify(self)
-                    
+
                 if (self.lifes == 0):
                     self.frame=0
                     self.currentAnim=SPRITE_DYING
@@ -243,7 +243,7 @@ class GodMelee(God):
 
     def __init__(self, spriteSheet, coords, x, y, animFrames):
         God.__init__(self, spriteSheet, coords, x, y, animFrames)
-        
+
 
     def setMeleeRange(self, width, height):
         self.attackRangeWidth = width
@@ -293,7 +293,7 @@ class GodRange(God):
                     self.frame = 0
 
                     self.attacking = True
-                    proyectile = Proyectile(self.rect.x, self.rect.y, type(self).__name__)
+                    proyectile = Proyectile(self.rect.x - 15 , self.rect.y - 115, type(self).__name__)
                     self.proyectiles.add(proyectile)
 
         dropItems = []
@@ -331,7 +331,7 @@ class Hera(GodMelee):
 
 class Hestia(GodRange):
     def __init__(self, x, y):
-        GodRange.__init__(self, "hera.png", "hera.txt", x, y,)
+        GodRange.__init__(self, "hestia.png", "hestia.txt", x, y, [4, 1, 4, 5, 1, 5])
 
 
 class Poseidon(GodRange):
@@ -393,7 +393,7 @@ class Enemy(NoPlayer):
             self.rect.x += self.vel[0]
         else:
             self.rect.x -= self.vel[0]
-    
+
     def move_enemy(self):
         return
 
@@ -412,8 +412,8 @@ class Telchines(Enemy):
 class Mermaids(Enemy):
     def __init__(self,x,y):
         Enemy.__init__(self,"Mermaid1.png",x,y)
-        
-        self.rect.width = 30    
+
+        self.rect.width = 30
 
     def move_enemy(self,level,static_group):
         spriteCollide = pygame.sprite.spritecollide(self, static_group, False)
@@ -432,7 +432,7 @@ class Mermaids(Enemy):
                 self.direction = False
             Enemy.move(self,self.direction)
             # print(self.rect.left, " ", self.rect.right, spriteCollide)
-            
+
 
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x - 30 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))

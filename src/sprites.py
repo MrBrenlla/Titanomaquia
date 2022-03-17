@@ -192,7 +192,7 @@ class Proyectile(MySprite):
         self.damage = 10
         self.rect = self.image.get_rect()
         self.rect.x = x
-        self.rect.y = y
+        self.rect.y = y 
 
     def moveProyectile(self):
         self.rect.x += self.vel
