@@ -269,13 +269,12 @@ class GodMelee(God):
             hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
             if hit:
                 dropItems.append(obj.damage())
-        enemiesDead = []
         for enemy in enemies:
             hit = pygame.Rect.colliderect(self.attackRect, enemy.rect)
             if hit:
-                enemiesDead.append(enemy)
+                enemy.damage()
 
-        return [dropItems,enemiesDead]
+        return dropItems
         
 
 
@@ -306,14 +305,12 @@ class GodRange(God):
 
     def update(self, static, enemies, destructable):
         dropItems = []
-        enemiesDead = []
         super().update(static, enemies, destructable)
         for i in self.proyectiles:
             i.moveProyectile()
-            dropItems = i.checkCollision(destructable)
-            enemiesDead = i.checkCollision(enemies)
+            dropItems = i.checkCollision(enemies, destructable)
 
-        return [dropItems,enemiesDead]
+        return dropItems
 
     def draw(self, screen, newScroll):
         Character.draw(self, screen, newScroll)
@@ -336,7 +333,7 @@ class Hera(GodMelee):
 
 class Hestia(GodRange):
     def __init__(self, x, y):
-        GodRange.__init__(self, "hestia.png", "hestia.txt", x, y, [4, 1, 4, 11, 1, 2])
+        GodRange.__init__(self, "hestia.png", "hestia.txt", x, y, [4, 1, 4, 11, 1, 4])
 
 
 class Poseidon(GodRange):
@@ -379,7 +376,7 @@ class NPC(NoPlayer):
 
 
 class Enemy(NoPlayer):
-    def __init__(self,spriteSheet,x,y):
+    def __init__(self,spriteSheet,x,y, level):
         NoPlayer.__init__(self)
         self.image = GestorRecursos.CargarImagen('NPC/' + spriteSheet, -1)
         # self.sheet = self.sheet.convert_alpha()
@@ -388,6 +385,7 @@ class Enemy(NoPlayer):
         self.rect.y = y
         self.vel = (5, 20)
         self.firstApparition = False
+        self.level = level
         self.direction = random.choice([True, False])
         if (self.direction):
             self.image = pygame.transform.flip(self.image,1,0)
@@ -400,11 +398,12 @@ class Enemy(NoPlayer):
             self.rect.x -= self.vel[0]
 
     def damage(self):
-        self.lifes -= 1 
+        self.lifes -= 1
         if self.lifes == 0:
-            return self
-        else:
-            return None
+            if len(self.level.screens[self.level.currentLevel][ENEMY_GROUP]) == 1:
+                self.level.screens[self.level.currentLevel][DOORS][self.level.screens[self.level.currentLevel][LEVEL_PROGRESSION]].openDoor()
+                self.level.screens[self.level.currentLevel][LEVEL_PROGRESSION] += 1
+            self.kill()
 
 
     def move_enemy(self):
@@ -423,8 +422,8 @@ class Telchines(Enemy):
     pass
 
 class Mermaids(Enemy):
-    def __init__(self,x,y):
-        Enemy.__init__(self,"Mermaid1.png",x,y)
+    def __init__(self,x,y, level):
+        Enemy.__init__(self,"Mermaid1.png",x,y, level)
         self.lifes = 2
 
         self.rect.width = 30

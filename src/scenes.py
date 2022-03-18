@@ -181,12 +181,25 @@ class Phase(Scene):
                     door = PracticeGuard((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(door)
                 elif level[i][j] == "J":
-                    enemy = Mermaids((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10))
+                    enemy = Mermaids((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10), self)
                     enemyGroup.add(enemy)
+                elif level[i][j] == "K":
+                    medal = Medal((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    interactableGroup.add(medal)
                 elif level[i][j] == "L":
                     door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl,lvlName)
                     interactableGroup.add(door)
                     doorArray.append(door)
+                elif level[i][j] == "M":
+                    mirror = Mirror((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    interactableGroup.add(mirror)
+                elif level[i][j] == "N":
+                    godObj = GodObject((j*self.tileSize + self.tileSize/4), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), lvlName)
+                    interactableGroup.add(godObj)
+                elif level[i][j] == "O":
+                    valve = Valve((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    interactableGroup.add(valve)
+
 
         return [staticGroup, interactableGroup, destructableGroup, enemyGroup, bgd, playerPos, levelScroll, doorArray, levelProgression]
 
@@ -236,16 +249,17 @@ class Olympus(Phase):
     def update(self, time):
         super().updateScroll()
         super().playerLimits()
-        [dropItems,enemiesDead] = self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP], self.screens[self.currentLevel][DESTRUCTABLE_GROUP])
+        dropItems = self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP], self.screens[self.currentLevel][DESTRUCTABLE_GROUP])
         for item in dropItems:
             self.screens[self.currentLevel][INTERACTABLE_GROUP].add(item)
-        for enemyDead in enemiesDead:
-            self.screens[self.currentLevel][ENEMY_GROUP].remove(enemyDead)
         for s in self.screens[self.currentLevel][ENEMY_GROUP]:
             s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
+
+        #condicion de muerte
         if (self.player.lifes == 0 and self.player.currentAnim == SPRITE_LET_DYING):
             #lanzar la escena de muerte
-            self.director.changeScene(Menu(self.director))
+            self.director.stackScene(DeathMenu(self.director))
+
         #condicion de fin de nivel
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
             Config.availableCharacters.append("Zeus")
@@ -288,15 +302,15 @@ class SubTemple(Phase):
         if player == "Hera":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Demeter":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Demeter(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hestia":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Hestia(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Zeus":
             self.player = Zeus(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Hades":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Hades(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Poseidon":
-            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+            self.player = Poseidon(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
 
         self.player.addObserver(self.LifeGUI)
 
@@ -305,13 +319,15 @@ class SubTemple(Phase):
     def update(self, time):
         super().updateScroll()
         super().playerLimits()
-        self.player.update(self.screens[self.currentLevel][STATIC_GROUP], self.screens[self.currentLevel][ENEMY_GROUP])
+        dropItems = self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP], self.screens[self.currentLevel][DESTRUCTABLE_GROUP])
+        for item in dropItems:
+            self.screens[self.currentLevel][INTERACTABLE_GROUP].add(item)
         for s in self.screens[self.currentLevel][ENEMY_GROUP]:
             s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
         #lose condition
         if (self.player.lifes == 0 and self.player.currentAnim == SPRITE_LET_DYING):
             #lanzar la escena de muerte
-            self.director.changeScene(Menu(self.director))
+            self.director.stackScene(DeathMenu(self.director))
         
         #sand control
         if (self.screens[1][LEVEL_PROGRESSION] == 1):
@@ -323,7 +339,8 @@ class SubTemple(Phase):
         #win condition
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
             Config.availableCharacters.append("Poseidon")
-            self.director.changeScene(CharacterSelectionMenu(self.director))
+            Config.availableLevels.remove("TemploSubmarino")
+            self.director.changeScene(LevelSelectionMenu(self.director))
 
 
 
@@ -484,6 +501,47 @@ class LevelSelectionMenu(Scene):
     def characterSelect(self, level):
         self.level = level
         self.currentScreen = 1
+
+    def showScreen(self):
+        self.currentScreen = 0
+
+
+class DeathMenu(Scene):
+    def __init__(self, director):
+        super().__init__(director)
+
+        self.screens = []
+        self.screens.append(DeathScreen(self))
+        self.showScreen()
+
+    def update(self, *args):
+        return
+
+    def events(self, eventList):
+        for event in eventList:
+            #Comprobar si se quiere salir
+            if event.type == pygame.QUIT:
+                self.director.exitGame()
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                self.resumeGame()
+
+        self.screens[self.currentScreen].events(eventList)
+
+    def draw(self, screen):
+        self.screens[self.currentScreen].draw(screen)
+
+
+    def exitGame(self):
+        self.director.exitGame()
+
+    def changeToOptions(self):
+        self.currentScreen = 1
+
+    def retry(self):
+        self.director.scenes = []
+        Config.availableCharacters = ["Hera", "Hestia", "Demeter"]
+        self.director.changeScene(Menu(self.director))
+
 
     def showScreen(self):
         self.currentScreen = 0

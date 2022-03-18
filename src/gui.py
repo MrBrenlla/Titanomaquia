@@ -63,6 +63,14 @@ class ContinueButton(GUIButton):
         self.screen.menu.resumeGame()
         # pygame.mixer.music.stop()
 
+class RetryButton(GUIButton):
+    def __init__(self, screen, image, position):
+        super().__init__(screen, image, position, (220, 60), -1)
+
+    def action(self):
+        self.screen.menu.retry()
+        # pygame.mixer.music.stop()
+
 class OptionsButton(GUIButton):
     def __init__(self, screen, image, position):
         super().__init__(screen, image, position, (220, 60), -1)
@@ -95,7 +103,7 @@ class SelectPlayerButton(GUIButton):
 
 class SelectLevelButton(GUIButton):
     def __init__(self, screen, image, position, level):
-        super().__init__(screen, image, position, (400, 400), None)
+        super().__init__(screen, image, position, (384, 384), None)
         self.level = level
 
     def action(self):
@@ -328,3 +336,15 @@ class LifeGUI(HUD):
 class InGameGUI(GUIScreen):
     def __init__(self, menu):
         pass
+
+
+
+class DeathScreen(GUIScreen):
+    def __init__(self, menu):
+        super().__init__(menu, "Menu/fondoMenuDeath.png", -1)
+        retryButton = RetryButton(self, "Menu/fondo.png", (640, 310))
+        quitButton = QuitButton(self, "Menu/fondo.png", (640, 405))
+
+
+        self.GUIElements.append(retryButton)
+        self.GUIElements.append(quitButton)

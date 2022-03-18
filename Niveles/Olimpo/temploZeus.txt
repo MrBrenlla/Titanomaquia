@@ -1,9 +1,9 @@
-   W             W   
- G            G      
- E     C      E  C   
- G G   E E      EEE  
- EEEE     DEE        
- C        D  EG      
- EEE      D   EE     
- CLPE  C  D      E   
+                     
+ M            M      
+ E     M      E  M   
+ M M   E E      EEE  
+ EEEE      EE        
+ M            EM      
+ EEE           EE     
+ MLPE  M  N      E   
 AAAAAAAAAAAAAAAAAAAAA

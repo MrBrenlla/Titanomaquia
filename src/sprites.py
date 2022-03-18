@@ -196,22 +196,33 @@ class Proyectile(MySprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.orginalPos = x
         self.rect.width = 48
         self.rect.height = 48
         
 
     def moveProyectile(self):
         self.rect.x += self.vel
-        
+
+        if abs(self.rect.x - self.orginalPos) > 700:
+            self.kill()
 
 
-    def checkCollision(self, destructable):
+    def checkCollision(self,enemies, destructable):
         dropItems = []
         for obj in destructable:
             hit = pygame.Rect.colliderect(self.rect, obj.rect)
             if hit:
                 dropItems.append(obj.damage())
                 self.kill()
+        for enemy in enemies:
+            hit = pygame.Rect.colliderect(self.rect, enemy.rect)
+            if hit:
+                enemy.damage()
+                self.kill()
+
+
+        
 
         return dropItems
 
@@ -223,3 +234,55 @@ class Sand(MySprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+
+class Medal(MySprite):
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        self.image = GestorRecursos.CargarImagen('Olimpo/Medallon.png', -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def interact(self, level):
+        pass 
+
+class Mirror(MySprite):
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        self.image = GestorRecursos.CargarImagen('Olimpo/Espello.png', -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def interact(self, level):
+        pass 
+
+
+
+class GodObject(MySprite):
+    def __init__(self, x, y, lvlName):
+        MySprite.__init__(self)
+        self.image = GestorRecursos.CargarImagen(f'{lvlName}/godObj.png', -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def interact(self, level):
+        level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
+        self.kill() 
+
+class Valve(MySprite):
+    def __init__(self, x, y):
+        MySprite.__init__(self)
+        self.image = GestorRecursos.CargarImagen('TemploSubmarino/Valvula.png', -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.active = False
+
+    def interact(self, level):
+        if not self.active:        
+            level.screens[level.currentLevel][DOORS][level.screens[level.currentLevel][LEVEL_PROGRESSION]].openDoor()
+            level.screens[level.currentLevel][LEVEL_PROGRESSION] += 1
+            self.active = True
