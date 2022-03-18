@@ -451,3 +451,34 @@ class Mermaids(Enemy):
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x - 30 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
         # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
+
+
+class Espiritu(Enemy):
+    def __init__(self,x,y, level):
+        Enemy.__init__(self,"Espiritu.png",x,y, level)
+        self.lifes = 2
+
+        self.rect.width = 30
+
+    def move_enemy(self,level,static_group):
+        spriteCollide = pygame.sprite.spritecollide(self, static_group, False)
+        if not(self.firstApparition):
+            if self.rect.left>0 and self.rect.right<(level.screenWidth+level.scroll[0]+20) and self.rect.bottom+10>0 and self.rect.top<(level.screenHeight+level.scroll[1]):
+                self.firstApparition=True
+        else:
+            if (spriteCollide == []):
+                self.image = pygame.transform.flip(self.image,1,0)
+                self.direction = not(self.direction)
+            if(self.rect.left<50):
+                self.image = pygame.transform.flip(self.image,1,0)
+                self.direction = True
+            if(self.rect.right>(level.levelSize[level.currentLevel][0]*128)-50):
+                self.image = pygame.transform.flip(self.image,1,0)
+                self.direction = False
+            Enemy.move(self,self.direction)
+            # print(self.rect.left, " ", self.rect.right, spriteCollide)
+
+
+    def draw(self, screen, newScroll):
+        screen.blit(self.image, (self.rect.x - 30 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
+        # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)

@@ -204,6 +204,9 @@ class Phase(Scene):
                     doors += 1
                     doorArray.append(door)
                     interactableGroup.add(door)
+                elif level[i][j] == "Q":
+                    enemy = Espiritu((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10), self)
+                    enemyGroup.add(enemy)
 
         return [staticGroup, interactableGroup, destructableGroup, enemyGroup, bgd, playerPos, levelScroll, doorArray, levelProgression]
 

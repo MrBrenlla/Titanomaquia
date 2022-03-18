@@ -21,7 +21,7 @@ if __name__ == '__main__':
     director = Director()
 
     #Creamos la primera escena
-    scene = Menu(director)
+    scene = Hell(director,"Hera")#Menu(director)
 
 
     director.stackScene(scene)
