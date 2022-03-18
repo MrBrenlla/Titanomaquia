@@ -185,17 +185,35 @@ class Mead(MySprite):
 
 
 class Proyectile(MySprite):
-    def __init__(self,x,y,nameGod):
+    def __init__(self,x,y,right, nameGod):
         MySprite.__init__(self)
         self.image = GestorRecursos.CargarImagen('Proyectil/proyectil_hestia.png', -1)
         self.vel = 10
+        if not right:
+            self.vel = -10
+            self.image = pygame.transform.flip(self.image, 1, 0)
         self.damage = 10
         self.rect = self.image.get_rect()
         self.rect.x = x
-        self.rect.y = y 
+        self.rect.y = y
+        self.rect.width = 48
+        self.rect.height = 48
+        
 
     def moveProyectile(self):
         self.rect.x += self.vel
+        
+
+
+    def checkCollision(self, destructable):
+        dropItems = []
+        for obj in destructable:
+            hit = pygame.Rect.colliderect(self.rect, obj.rect)
+            if hit:
+                dropItems.append(obj.damage())
+                self.kill()
+
+        return dropItems
 
 
 class Sand(MySprite):

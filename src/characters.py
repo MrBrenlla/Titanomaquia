@@ -126,7 +126,7 @@ class Character(MySprite):
 
             if (self.attacking):
                 self.currentAnim=SPRITE_ATTACK
-                print(self.anims[self.currentAnim])
+                # print(self.anims[self.currentAnim])
                 if self.right:
                     self.attackRect.x = self.rect.x + self.attackRangeWidth
                 else:
@@ -161,7 +161,7 @@ class Character(MySprite):
 
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x -22 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
-        pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
+        # pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
         # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
@@ -235,9 +235,10 @@ class God(Character):
                     self.frame=0
                     self.currentAnim=SPRITE_DYING
 
-    def update(self, static, enemies):
+    def update(self, static, enemies, destructable):
         super().update(static)
         self.TakeDamage(enemies)
+        
 
 class GodMelee(God):
 
@@ -249,8 +250,7 @@ class GodMelee(God):
         self.attackRangeWidth = width
         self.attackRangeHeight = height
 
-    def attack(self, destructable, eventList):
-
+    def attack(self, eventList):
         for event in eventList:
             if event.type == KEYDOWN and event.key == K_SPACE:
                 if not self.attacking:
@@ -262,14 +262,16 @@ class GodMelee(God):
 
                     self.attacking = True
             #Character.currentAnim=SPRITE_ATTACK
-
+    def update(self, static, enemies, destructable):
         dropItems = []
+        super().update(static, enemies, destructable)
         for obj in destructable:
             hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
             if hit:
                 dropItems.append(obj.damage())
 
         return dropItems
+        
 
 
 class GodRange(God):
@@ -282,8 +284,7 @@ class GodRange(God):
         self.proyectiles = pygame.sprite.Group()
 
 
-    def attack(self, destructable, eventList):
-
+    def attack(self, eventList):
         for event in eventList:
             if event.type == KEYDOWN and event.key == K_SPACE:
                 if not self.attacking:
@@ -293,27 +294,23 @@ class GodRange(God):
                     self.frame = 0
 
                     self.attacking = True
-                    proyectile = Proyectile(self.rect.x - 15 , self.rect.y - 115, type(self).__name__)
+                    proyectile = Proyectile(self.rect.x , self.rect.y + 20, self.right, type(self).__name__)
+                    
                     self.proyectiles.add(proyectile)
 
+
+    def update(self, static, enemies, destructable):
         dropItems = []
-        for obj in destructable:
-            hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
-            if hit:
-                dropItems.append(obj.damage())
-
-        return dropItems
-
-
-    def update(self, static, enemies):
-        super().update(static, enemies)
+        super().update(static, enemies, destructable)
         for i in self.proyectiles:
             i.moveProyectile()
+            dropItems = i.checkCollision(destructable)
+        return dropItems
 
     def draw(self, screen, newScroll):
         Character.draw(self, screen, newScroll)
         for s in self.proyectiles.sprites():
-            screen.blit(s.image,(s.rect.x-newScroll[0],s.rect.y-newScroll[1]))
+            screen.blit(s.image,(s.rect.x-newScroll[0] - 20,s.rect.y-newScroll[1] - 45))
 
 
 #Clases de cada dios
@@ -331,7 +328,7 @@ class Hera(GodMelee):
 
 class Hestia(GodRange):
     def __init__(self, x, y):
-        GodRange.__init__(self, "hestia.png", "hestia.txt", x, y, [4, 1, 4, 5, 1, 5])
+        GodRange.__init__(self, "hestia.png", "hestia.txt", x, y, [4, 1, 4, 11, 1, 2])
 
 
 class Poseidon(GodRange):
