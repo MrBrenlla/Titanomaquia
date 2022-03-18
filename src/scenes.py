@@ -117,7 +117,7 @@ class Phase(Scene):
         self.player.draw(screen, self.scroll)
         self.LifeGUI.draw(screen)
 
-    def genLevel(self, lvlName,  txt, lvl, playerPos):
+    def genLevel(self, lvlName,  txt, lvl, playerPos, doorsDis):
         #leemos el txt para saber que elemetos colocar
         level = GestorRecursos.CargarNivelTxt(f"{lvlName}/{txt}")
         level = level.split("\n")
@@ -125,7 +125,7 @@ class Phase(Scene):
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl, lvlName)
         # print(bgd.rect)
-        doors = 1
+        doors = 1 + doorsDis
         # floorGroup = pygame.sprite.Group()
         # vaseGroup = pygame.sprite.Group()
         # platformGroup = pygame.sprite.Group()
@@ -165,7 +165,7 @@ class Phase(Scene):
                     offset = 0
                     if lvlName == "Olimpo":
                         offset = self.tileSize/2
-                    door = Door((j*self.tileSize), (i*self.tileSize - offset)-(l*self.tileSize-self.screenHeight), doors, lvl,lvlName)
+                    door = Door((j*self.tileSize), (i*self.tileSize - offset)-(l*self.tileSize-self.screenHeight), doors, lvl,lvlName, True)
                     doors += 1
                     doorArray.append(door)
                     interactableGroup.add(door)
@@ -178,8 +178,8 @@ class Phase(Scene):
                     key = Key((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(key)
                 elif level[i][j] == "I":
-                    door = PracticeGuard((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
-                    interactableGroup.add(door)
+                    pGuard = PracticeGuard((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
+                    interactableGroup.add(pGuard)
                 elif level[i][j] == "J":
                     enemy = Mermaids((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10), self)
                     enemyGroup.add(enemy)
@@ -187,7 +187,7 @@ class Phase(Scene):
                     medal = Medal((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(medal)
                 elif level[i][j] == "L":
-                    door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl,lvlName)
+                    door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), 0, lvl,lvlName, True)
                     interactableGroup.add(door)
                     doorArray.append(door)
                 elif level[i][j] == "M":
@@ -199,7 +199,11 @@ class Phase(Scene):
                 elif level[i][j] == "O":
                     valve = Valve((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
                     interactableGroup.add(valve)
-
+                elif level[i][j] == "P":
+                    door = Door((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), doors, lvl,lvlName, False)
+                    doors += 1
+                    doorArray.append(door)
+                    interactableGroup.add(door)
 
         return [staticGroup, interactableGroup, destructableGroup, enemyGroup, bgd, playerPos, levelScroll, doorArray, levelProgression]
 
@@ -228,7 +232,7 @@ class Olympus(Phase):
 
         for level in range(len(self.levels)):
             # print(level)
-            self.screens.append(super().genLevel("Olimpo", self.levels[level], level, (300, 500)))
+            self.screens.append(super().genLevel("Olimpo", self.levels[level], level, (300, 500), 0))
 
         if player == "Hera":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
@@ -266,7 +270,6 @@ class Olympus(Phase):
             self.director.changeScene(LevelSelectionMenu(self.director))
 
 
-
 class SubTemple(Phase):
 
     def __init__(self, director, player):
@@ -298,7 +301,7 @@ class SubTemple(Phase):
                 playerPos = (3900, 500)
             else:
                 playerPos = (300, 500)
-            self.screens.append(super().genLevel("TemploSubmarino", self.levels[level], level, playerPos))
+            self.screens.append(super().genLevel("TemploSubmarino", self.levels[level], level, playerPos, 0))
         if player == "Hera":
             self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
         elif player == "Demeter":
@@ -340,8 +343,82 @@ class SubTemple(Phase):
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
             Config.availableCharacters.append("Poseidon")
             Config.availableLevels.remove("TemploSubmarino")
-            self.director.changeScene(LevelSelectionMenu(self.director))
+            if Config.availableLevels == []:
+                self.director.changeScene(Menu(self.director))
+            else:
+                self.director.changeScene(LevelSelectionMenu(self.director))
 
+
+class Hell(Phase):
+
+    def __init__(self, director, player):
+        super().__init__(director)
+
+        GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
+        pygame.mixer.music.set_volume(Config.musicVolume)
+        pygame.mixer.music.play()
+
+        #Info del nivel
+        self.screens = []
+        
+        self.levels = ["puertas.txt", "enemigos.txt", "puertas.txt", "enemigos.txt", "puertas.txt", "enemigos.txt", "enemigos.txt", "enemigos.txt", "enemigos.txt", "salaFinal.txt"]
+        self.levelSize = [[26, 5], [17, 5], [26, 5], [17, 5], [26, 5], [17, 5], [17, 5], [17, 5], [17, 5], [21, 5]]
+        self.changeLevel = False
+        self.currentLevel = 0
+        self.lastLevel = 0
+
+        self.playerName = player
+
+        self.LifeGUI = LifeGUI("Barra de vida.png","VidaCoords.txt")
+        #grupos
+
+        for level in range(len(self.levels)):
+            # print(level)
+            doorDis = 0
+            if level == 2:
+                doorDis = 3
+            if level == 4:
+                doorDis = 6
+            self.screens.append(super().genLevel("Infierno", self.levels[level], level, (300, 500), doorDis))
+
+        if player == "Hera":
+            self.player = Hera(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Demeter":
+            self.player = Demeter(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Hestia":
+            self.player = Hestia(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Zeus":
+            self.player = Zeus(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Hades":
+            self.player = Hades(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+        elif player == "Poseidon":
+            self.player = Poseidon(self.screens[self.currentLevel][PLAYER_POS][0], self.screens[self.currentLevel][PLAYER_POS][1])
+
+        self.player.addObserver(self.LifeGUI)
+
+
+    def update(self, time):
+        super().updateScroll()
+        super().playerLimits()
+        dropItems = self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP], self.screens[self.currentLevel][DESTRUCTABLE_GROUP])
+        for item in dropItems:
+            self.screens[self.currentLevel][INTERACTABLE_GROUP].add(item)
+        for s in self.screens[self.currentLevel][ENEMY_GROUP]:
+            s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
+
+        #condicion de muerte
+        if (self.player.lifes == 0 and self.player.currentAnim == SPRITE_LET_DYING):
+            #lanzar la escena de muerte
+            self.director.stackScene(DeathMenu(self.director))
+
+        #condicion de fin de nivel
+        if (self.currentLevel == 9 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
+            Config.availableCharacters.append("Hades")
+            Config.availableLevels.remove("Infierno")
+            if Config.availableLevels == []:
+                self.director.changeScene(Menu(self.director))
+            else:
+                self.director.changeScene(LevelSelectionMenu(self.director))
 
 
 
@@ -494,8 +571,7 @@ class LevelSelectionMenu(Scene):
         if self.level == "TemploSubmarino":
             phase = SubTemple(self.director, player)
         else:
-            pass
-            # phase = Infierno(self.director, player)
+            phase = Hell(self.director, player)
         self.director.changeScene(phase)
 
     def characterSelect(self, level):

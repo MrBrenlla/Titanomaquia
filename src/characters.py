@@ -346,7 +346,8 @@ class Hades(GodMelee):
 
 class Demeter(GodMelee):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y,)
+        God.__init__(self, "demeter.png", "demeter.txt", x, y, [4, 1, 4, 7, 1, 3])
+        self.setMeleeRange(55, 60)
 
 
 #Clases personajes no jugables

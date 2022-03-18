@@ -103,7 +103,7 @@ class SelectPlayerButton(GUIButton):
 
 class SelectLevelButton(GUIButton):
     def __init__(self, screen, image, position, level):
-        super().__init__(screen, image, position, (384, 384), None)
+        super().__init__(screen, image, position, (384, 384), -1)
         self.level = level
 
     def action(self):

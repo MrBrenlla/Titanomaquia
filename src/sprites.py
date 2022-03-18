@@ -38,7 +38,7 @@ class Floor(MySprite):
     def __init__(self, x, y,lvlName):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen(f'{lvlName}/Suelo.png')
+        self.image = GestorRecursos.CargarImagen(f'{lvlName}/Suelo.png', - 1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -78,17 +78,20 @@ class Key(MySprite):
 class Door(MySprite):
     "Los Sprites que tendra este juego"
     # Primero invocamos al constructor de la clase padre
-    def __init__(self, x, y, level, lastLevel, lvlName):
+    def __init__(self, x, y, level, lastLevel, lvlName, closed):
         MySprite.__init__(self)
         # Cargamos la imagen
-        self.image = GestorRecursos.CargarImagen(f'{lvlName}/PortaPechada.png', -1)
+        if closed:
+            self.image = GestorRecursos.CargarImagen(f'{lvlName}/PortaPechada.png', -1)
+        else: 
+            self.image = GestorRecursos.CargarImagen('ObjetosComunes/door.png', -1)
         # El rectangulo donde estara la imagen
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.level = level
         self.lastLevel = lastLevel
-        self.closed = True
+        self.closed = closed
 
     def openDoor(self):
         self.image = GestorRecursos.CargarImagen('ObjetosComunes/door.png', -1)
@@ -96,8 +99,9 @@ class Door(MySprite):
 
     def interact(self, level):
         if not self.closed:
+            print(self.lastLevel)
             level.changeLevel = True
-            level.currentLevel = self.level
+            level.currentLevel = level.lastLevel if self.level == 0 else self.level
             level.lastLevel = self.lastLevel
             #Posicionar al jugador segun la posicion correcta en el nivel y actualizar la del nivel anterior
             level.screens[level.lastLevel][PLAYER_POS] = (self.rect.x, self.rect.y)
