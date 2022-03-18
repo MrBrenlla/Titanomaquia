@@ -269,8 +269,13 @@ class GodMelee(God):
             hit = pygame.Rect.colliderect(self.attackRect, obj.rect)
             if hit:
                 dropItems.append(obj.damage())
+        enemiesDead = []
+        for enemy in enemies:
+            hit = pygame.Rect.colliderect(self.attackRect, enemy.rect)
+            if hit:
+                enemiesDead.append(enemy)
 
-        return dropItems
+        return [dropItems,enemiesDead]
         
 
 
@@ -301,11 +306,14 @@ class GodRange(God):
 
     def update(self, static, enemies, destructable):
         dropItems = []
+        enemiesDead = []
         super().update(static, enemies, destructable)
         for i in self.proyectiles:
             i.moveProyectile()
             dropItems = i.checkCollision(destructable)
-        return dropItems
+            enemiesDead = i.checkCollision(enemies)
+
+        return [dropItems,enemiesDead]
 
     def draw(self, screen, newScroll):
         Character.draw(self, screen, newScroll)
@@ -391,6 +399,14 @@ class Enemy(NoPlayer):
         else:
             self.rect.x -= self.vel[0]
 
+    def damage(self):
+        self.lifes -= 1 
+        if self.lifes == 0:
+            return self
+        else:
+            return None
+
+
     def move_enemy(self):
         return
 
@@ -409,6 +425,7 @@ class Telchines(Enemy):
 class Mermaids(Enemy):
     def __init__(self,x,y):
         Enemy.__init__(self,"Mermaid1.png",x,y)
+        self.lifes = 2
 
         self.rect.width = 30
 

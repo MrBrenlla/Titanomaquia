@@ -236,9 +236,11 @@ class Olympus(Phase):
     def update(self, time):
         super().updateScroll()
         super().playerLimits()
-        dropItems = self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP], self.screens[self.currentLevel][DESTRUCTABLE_GROUP])
+        [dropItems,enemiesDead] = self.player.update(self.screens[self.currentLevel][STATIC_GROUP],self.screens[self.currentLevel][ENEMY_GROUP], self.screens[self.currentLevel][DESTRUCTABLE_GROUP])
         for item in dropItems:
             self.screens[self.currentLevel][INTERACTABLE_GROUP].add(item)
+        for enemyDead in enemiesDead:
+            self.screens[self.currentLevel][ENEMY_GROUP].remove(enemyDead)
         for s in self.screens[self.currentLevel][ENEMY_GROUP]:
             s.move_enemy(self,self.screens[self.currentLevel][STATIC_GROUP])
         if (self.player.lifes == 0 and self.player.currentAnim == SPRITE_LET_DYING):

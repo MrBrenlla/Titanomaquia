@@ -21,7 +21,7 @@ if __name__ == '__main__':
     director = Director()
 
     #Creamos la primera escena
-    scene = Olympus(director, "Hera")
+    scene = Olympus(director, "Hestia")
 
 
     director.stackScene(scene)
