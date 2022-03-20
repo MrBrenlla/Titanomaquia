@@ -191,7 +191,7 @@ class Mead(MySprite):
 class Proyectile(MySprite):
     def __init__(self,x,y,right, nameGod):
         MySprite.__init__(self)
-        self.image = GestorRecursos.CargarImagen('Proyectil/proyectil_hestia.png', -1)
+        self.image = GestorRecursos.CargarImagen('Proyectil/proyectil' + nameGod + '.png', -1)
         self.vel = 10
         if not right:
             self.vel = -10

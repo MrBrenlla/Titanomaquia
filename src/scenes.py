@@ -269,8 +269,16 @@ class Olympus(Phase):
 
         #condicion de fin de nivel
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
-            Config.availableCharacters.append("Zeus")
-            self.director.changeScene(LevelSelectionMenu(self.director))
+            if not("Zeus" in Config.availableCharacters):
+                Config.availableCharacters.append("Zeus")
+            #self.director.changeScene(LevelSelectionMenu(self.director))
+            if Config.availableLevels == []:
+                Config.availableLevels.append("TemploSubmarino")
+                Config.availableLevels.append("Infierno")
+                self.director.changeScene(LevelSelectionMenu(self.director))
+                #self.director.changeScene(Menu(self.director))
+            else:
+                self.director.changeScene(LevelSelectionMenu(self.director))
 
 
 class SubTemple(Phase):
@@ -278,7 +286,7 @@ class SubTemple(Phase):
     def __init__(self, director, player):
         super().__init__(director)
 
-        GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
+        GestorRecursos.CargarSonido("Musica_SubTemple.wav",True)
         pygame.mixer.music.set_volume(Config.musicVolume)
         pygame.mixer.music.play()
 
@@ -344,7 +352,8 @@ class SubTemple(Phase):
 
         #win condition
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
-            Config.availableCharacters.append("Poseidon")
+            if not("Poseidon" in Config.availableCharacters):
+                Config.availableCharacters.append("Poseidon")
             Config.availableLevels.remove("TemploSubmarino")
             if Config.availableLevels == []:
                 self.director.changeScene(Menu(self.director))
@@ -357,7 +366,7 @@ class Hell(Phase):
     def __init__(self, director, player):
         super().__init__(director)
 
-        GestorRecursos.CargarSonido("Musica_Olimpo.wav",True)
+        GestorRecursos.CargarSonido("Musica_Hell.wav",True)
         pygame.mixer.music.set_volume(Config.musicVolume)
         pygame.mixer.music.play()
 
@@ -416,7 +425,8 @@ class Hell(Phase):
 
         #condicion de fin de nivel
         if (self.currentLevel == 9 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
-            Config.availableCharacters.append("Hades")
+            if not("Hades" in Config.availableCharacters):
+                Config.availableCharacters.append("Hades")
             Config.availableLevels.remove("Infierno")
             if Config.availableLevels == []:
                 self.director.changeScene(Menu(self.director))

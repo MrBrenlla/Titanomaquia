@@ -138,8 +138,9 @@ class Character(MySprite):
                     self.attacking = False
                     self.attackRect = pygame.Rect(0, 0, 0, 0)
         else:
-            if (self.frame>=4):
+            if (self.frame>=len(self.anims[SPRITE_DYING])-2):
                 self.currentAnim=SPRITE_LET_DYING
+
         #check collisions
         static_collider = pygame.sprite.spritecollideany(self, static)
 
@@ -328,7 +329,7 @@ class Hera(GodMelee):
     def __init__(self, x, y):
         GodMelee.__init__(self, "hera.png", "hera.txt", x, y, [4, 1, 4, 5, 1, 5])
         self.setMeleeRange(55, 60)
-        self.name = "Hera"
+        #self.name = "Hera"
 
 
 class Hestia(GodRange):
@@ -338,16 +339,16 @@ class Hestia(GodRange):
 
 class Poseidon(GodRange):
     def __init__(self, x, y):
-        God.__init__(self, "hera.png", "hera.txt", x, y,)
+        GodRange.__init__(self, "poseidon.png", "poseidon.txt", x, y, [4, 1, 4, 12, 1, 4])
 
 class Hades(GodMelee):
     def __init__(self, x, y):
-        God.__init__(self, "hades.png", "hades.txt", x, y,[4,1,2,5,1,3])
+        GodMelee.__init__(self, "hades.png", "hades.txt", x, y,[4,1,2,5,1,3])
         self.setMeleeRange(55, 60)
 
 class Demeter(GodMelee):
     def __init__(self, x, y):
-        God.__init__(self, "demeter.png", "demeter.txt", x, y, [4, 1, 4, 7, 1, 3])
+        GodMelee.__init__(self, "demeter.png", "demeter.txt", x, y, [4, 1, 4, 7, 1, 3])
         self.setMeleeRange(55, 60)
 
 
