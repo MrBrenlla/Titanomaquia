@@ -627,6 +627,7 @@ class DeathMenu(Scene):
     def retry(self):
         self.director.scenes = []
         Config.availableCharacters = ["Hera", "Hestia", "Demeter"]
+        Config.availableLevels = ["TemploSubmarino", "Infierno"]
         self.director.changeScene(Menu(self.director))
 
 
