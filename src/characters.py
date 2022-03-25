@@ -16,7 +16,7 @@ SPRITE_IDLE = 2
 SPRITE_DYING = 3
 SPRITE_LET_DYING = 4
 SPRITE_ATTACK = 5
-
+# TODO: Crear una funcion muerte y posiblemente llamarla en escenas en vez del update y tal
 #Clase generica Personaje
 class Character(MySprite):
     def __init__(self, spriteSheet, coords, x, y, animFrames):
