@@ -230,7 +230,15 @@ class God(Character):
     def update(self, static, enemies, destructable):
         super().update(static)
         self.TakeDamage(enemies)
-        
+
+    def removeObserver(self, observer):
+        if observer in self.observers:
+            self.observers.pop(observer)
+
+    def notifyObservers(self):
+        for s in self.observers:
+            s.notify(self)
+
 
 class GodMelee(God):
 
