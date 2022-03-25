@@ -180,6 +180,15 @@ class God(Character):
     def addObserver(self,observer):
         if observer not in self.observers:
            self.observers.append(observer)
+    
+    def removeObserver(self,observer):
+        if observer in self.observers:
+           self.observers.pop(observer)
+
+    def notifyObservers(self):
+        for s in self.observers:
+            s.notify(self)
+
 
     def attack(self, destructable, eventList):
         raise NotImplemented("Tiene que implementar el metodo attack.")
@@ -215,8 +224,7 @@ class God(Character):
                 if (self.lifes<3):
                     print(self.lifes)
                     self.lifes += 1
-                    for s in self.observers:
-                        s.notify(self)
+                    self.notifyObservers()
                     interact_collider.interact(level)
             else:
                 interact_collider.interact(level)
@@ -229,8 +237,7 @@ class God(Character):
                 pygame.time.set_timer(self.invencibilityCD, self.timeVulnerability)
                 if self.lifes > 0:
                     self.lifes -= 1
-                    for s in self.observers:
-                        s.notify(self)
+                    self.notifyObservers()
 
                 if (self.lifes == 0):
                     self.frame=0

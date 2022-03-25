@@ -9,6 +9,9 @@ class HUD():
 
     def draw(self):
         raise NotImplemented("Tiene que implementar el metodo draw.")
+    
+    def notify(self,player):
+        raise NotImplemented("Tiene que implementar el metodo notify.")
 
 class GUIElement():
     def __init__(self, screen, rect):
