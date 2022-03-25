@@ -179,7 +179,7 @@ class Phase(Scene):
                     interactableGroup.add(key)
                 elif level[i][j] == "I":
                     pGuard = PracticeGuard((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight))
-                    interactableGroup.add(pGuard)
+                    destructableGroup.add(pGuard)
                 elif level[i][j] == "J":
                     enemy = Mermaids((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight-10), self)
                     enemyGroup.add(enemy)
@@ -356,7 +356,7 @@ class SubTemple(Phase):
                 Config.availableCharacters.append("Poseidon")
             Config.availableLevels.remove("TemploSubmarino")
             if Config.availableLevels == []:
-                self.director.changeScene(Menu(self.director))
+                self.director.stackScene(WinMenu(self.director))
             else:
                 self.director.changeScene(LevelSelectionMenu(self.director))
 
@@ -429,7 +429,7 @@ class Hell(Phase):
                 Config.availableCharacters.append("Hades")
             Config.availableLevels.remove("Infierno")
             if Config.availableLevels == []:
-                self.director.changeScene(Menu(self.director))
+                self.director.stackScene(WinMenu(self.director))
             else:
                 self.director.changeScene(LevelSelectionMenu(self.director))
 
@@ -611,8 +611,6 @@ class DeathMenu(Scene):
             #Comprobar si se quiere salir
             if event.type == pygame.QUIT:
                 self.director.exitGame()
-            if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.resumeGame()
 
         self.screens[self.currentScreen].events(eventList)
 
@@ -629,6 +627,45 @@ class DeathMenu(Scene):
     def retry(self):
         self.director.scenes = []
         Config.availableCharacters = ["Hera", "Hestia", "Demeter"]
+        self.director.changeScene(Menu(self.director))
+
+
+    def showScreen(self):
+        self.currentScreen = 0
+
+
+
+class WinMenu(Scene):
+    def __init__(self, director):
+        super().__init__(director)
+
+        self.screens = []
+        self.screens.append(WinScreen(self))
+        self.showScreen()
+
+    def update(self, *args):
+        return
+
+    def events(self, eventList):
+        for event in eventList:
+            #Comprobar si se quiere salir
+            if event.type == pygame.QUIT:
+                self.director.exitGame()
+
+        self.screens[self.currentScreen].events(eventList)
+
+    def draw(self, screen):
+        self.screens[self.currentScreen].draw(screen)
+
+
+    def exitGame(self):
+        self.director.exitGame()
+
+    def changeToOptions(self):
+        self.currentScreen = 1
+
+    def retry(self):
+        self.director.scenes = []
         self.director.changeScene(Menu(self.director))
 
 

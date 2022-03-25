@@ -348,3 +348,13 @@ class DeathScreen(GUIScreen):
 
         self.GUIElements.append(retryButton)
         self.GUIElements.append(quitButton)
+
+class WinScreen(GUIScreen):
+    def __init__(self, menu):
+        super().__init__(menu, "Menu/Fondo final.png", None)
+        retryButton = RetryButton(self, "Menu/fondo.png", (200, 265))
+        quitButton = QuitButton(self, "Menu/fondo.png", (480, 265))
+
+
+        self.GUIElements.append(retryButton)
+        self.GUIElements.append(quitButton)
