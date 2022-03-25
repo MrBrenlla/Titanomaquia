@@ -105,7 +105,6 @@ class Door(MySprite):
             level.lastLevel = self.lastLevel
             #Posicionar al jugador segun la posicion correcta en el nivel y actualizar la del nivel anterior
             level.screens[level.lastLevel][PLAYER_POS] = (self.rect.x, self.rect.y)
-            # print(self.player.rect.x, self.player.rect.y)
             level.player.rect.x = level.screens[level.currentLevel][PLAYER_POS][0]
             level.player.rect.y = level.screens[level.currentLevel][PLAYER_POS][1]
 

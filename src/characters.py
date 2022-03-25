@@ -100,7 +100,6 @@ class Character(MySprite):
         else:
             self.image = pygame.transform.flip(self.sheet.subsurface(self.anims[self.currentAnim][self.frame]), 1, 0)
 
-        # self.rect.bottom = self.rect.y
 
     def update(self, static):
 
@@ -126,7 +125,6 @@ class Character(MySprite):
 
             if (self.attacking):
                 self.currentAnim=SPRITE_ATTACK
-                # print(self.anims[self.currentAnim])
                 if self.right:
                     self.attackRect.x = self.rect.x + self.attackRangeWidth
                 else:
@@ -155,15 +153,12 @@ class Character(MySprite):
                 self.jumping = False
         if static_collider == None:
             self.jumping = True
-        #print("self.rect.y: ", self.rect.y)
 
 
         self.updateAnim()
 
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x -22 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
-        # pygame.draw.rect(screen, (255, 255, 255), (self.attackRect.x - newScroll[0], self.attackRect.y -newScroll[1], self.attackRect.width, self.attackRect.height), 4)
-        # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
 #Clase plantilla dioses
@@ -180,15 +175,6 @@ class God(Character):
     def addObserver(self,observer):
         if observer not in self.observers:
            self.observers.append(observer)
-    
-    def removeObserver(self,observer):
-        if observer in self.observers:
-           self.observers.pop(observer)
-
-    def notifyObservers(self):
-        for s in self.observers:
-            s.notify(self)
-
 
     def attack(self, destructable, eventList):
         raise NotImplemented("Tiene que implementar el metodo attack.")
@@ -202,13 +188,11 @@ class God(Character):
                 self.velX = self.vel[0]
             if keys[left]:
                 self.right = False
-        #       Character.move(self,LEFT)
                 self.velX = -self.vel[0]
             if keys[up] and not(self.jumping):
                 son_jump = GestorRecursos.CargarSonido("Comunes/salto.wav",False)
                 son_jump.set_volume(Config.effectsVolume / 10)
                 son_jump.play()
-        #        Character.move(self,UP)
                 self.jumpVel = -self.vel[1]
                 self.jumping = True
         #aplicamos gravedad
@@ -262,14 +246,12 @@ class GodMelee(God):
         for event in eventList:
             if event.type == KEYDOWN and event.key == K_SPACE:
                 if not self.attacking:
-                    #son_attak = GestorRecursos.CargarSonido(self.name + "/ataque.wav",False)
                     son_attack = GestorRecursos.CargarSonido(type(self).__name__ + "/ataque.wav",False)
                     son_attack.set_volume(Config.effectsVolume)
                     son_attack.play()
                     self.frame = 0
 
                     self.attacking = True
-            #Character.currentAnim=SPRITE_ATTACK
     def update(self, static, enemies, destructable):
         dropItems = []
         super().update(static, enemies, destructable)
@@ -336,7 +318,6 @@ class Hera(GodMelee):
     def __init__(self, x, y):
         GodMelee.__init__(self, "hera.png", "hera.txt", x, y, [4, 1, 4, 5, 1, 5])
         self.setMeleeRange(55, 60)
-        #self.name = "Hera"
 
 
 class Hestia(GodRange):
@@ -389,7 +370,6 @@ class Enemy(NoPlayer):
     def __init__(self,spriteSheet,x,y, level):
         NoPlayer.__init__(self)
         self.image = GestorRecursos.CargarImagen('NPC/' + spriteSheet, -1)
-        # self.sheet = self.sheet.convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -454,12 +434,10 @@ class Mermaids(Enemy):
                 self.image = pygame.transform.flip(self.image,1,0)
                 self.direction = False
             Enemy.move(self,self.direction)
-            # print(self.rect.left, " ", self.rect.right, spriteCollide)
 
 
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x - 30 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
-        # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)
 
 
 class Espiritu(Enemy):
@@ -485,9 +463,7 @@ class Espiritu(Enemy):
                 self.image = pygame.transform.flip(self.image,1,0)
                 self.direction = False
             Enemy.move(self,self.direction)
-            # print(self.rect.left, " ", self.rect.right, spriteCollide)
 
 
     def draw(self, screen, newScroll):
         screen.blit(self.image, (self.rect.x - 30 - newScroll[0], self.rect.y - newScroll[1] - self.image.get_height() + self.rect.height, self.rect.width, self.rect.height))
-        # pygame.draw.rect(screen, (255, 255, 255), (self.rect.x - newScroll[0], self.rect.y -newScroll[1], self.rect.width, self.rect.height), 4)

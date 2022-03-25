@@ -9,9 +9,6 @@ class HUD():
 
     def draw(self):
         raise NotImplemented("Tiene que implementar el metodo draw.")
-    
-    def notify(self,player):
-        raise NotImplemented("Tiene que implementar el metodo notify.")
 
 class GUIElement():
     def __init__(self, screen, rect):
@@ -21,8 +18,7 @@ class GUIElement():
     def setPosition(self, position):
         (posX, posY) = position
         self.rect.center = position
-        # self.rect.left = posX
-        # self.rect.bottom = posY
+
 
     def inElementPosition(self, position):
         (posX, posY) = position
@@ -49,7 +45,7 @@ class GUIButton(GUIElement):
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
+
 
 class PlayButton(GUIButton):
     def __init__(self, screen, image, position):
@@ -64,7 +60,7 @@ class ContinueButton(GUIButton):
 
     def action(self):
         self.screen.menu.resumeGame()
-        # pygame.mixer.music.stop()
+
 
 class RetryButton(GUIButton):
     def __init__(self, screen, image, position):
@@ -72,7 +68,7 @@ class RetryButton(GUIButton):
 
     def action(self):
         self.screen.menu.retry()
-        # pygame.mixer.music.stop()
+
 
 class OptionsButton(GUIButton):
     def __init__(self, screen, image, position):
@@ -159,7 +155,7 @@ class GUIText(GUIElement):
         screen.blit(self.outline, (self.rect.x + stroke, self.rect.y + stroke))
         #real text
         screen.blit(self.image, self.rect)
-        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 4)
+
 
     def action(self):
         return
@@ -219,7 +215,6 @@ class GUIScreen():
     def draw(self, screen):
         # Dibujamos primero la imagen de fondo
         screen.blit(self.image, (0, 0))
-        # pygame.draw.line(screen, (255, 255, 255), (640, 0), (640, 640))
         # Después los botones
         for element in self.GUIElements:
             element.draw(screen)
@@ -256,8 +251,6 @@ class OptionsScreen(GUIScreen):
     def __init__(self, menu):
         super().__init__(menu, "Menu/menuOpciones.png", None)
         #adjust volume
-        #playButton = PlayButton(self, "Menu/fondo.png", (640, 310))
-        #optionsButton = QuitButton(self, "Menu/fondo.png", (640, 375))
         backButton = BackButton(self, "Menu/fondo.png", (640, 440))
         musicVolumeText = MusicVolumeText(self)
         musicVoumeUpButton = ChangeVolumeButton(self, "Menu/fondo.png", (850, 375), "musica", 0.01, musicVolumeText)

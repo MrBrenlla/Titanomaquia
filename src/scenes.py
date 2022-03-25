@@ -8,9 +8,6 @@ from gui import *
 from config import *
 
 #Constantes acceso a grupos del nivel
-# FLOOR_GROUP = 0
-# VASE_GROUP = 1
-# PLATFORM_GROUP = 2
 STATIC_GROUP = 0
 INTERACTABLE_GROUP = 1
 DESTRUCTABLE_GROUP = 2
@@ -124,11 +121,9 @@ class Phase(Scene):
         subLevel = txt.split(".")[0]
         l = len(level)
         bgd = Background(0, -(l*self.tileSize-self.screenHeight), lvl, lvlName)
-        # print(bgd.rect)
+
         doors = 1 + doorsDis
-        # floorGroup = pygame.sprite.Group()
-        # vaseGroup = pygame.sprite.Group()
-        # platformGroup = pygame.sprite.Group()
+
         staticGroup = pygame.sprite.Group()
         interactableGroup = pygame.sprite.Group()
         destructableGroup = pygame.sprite.Group()
@@ -141,17 +136,17 @@ class Phase(Scene):
             for j in range(len(level[0])):
                 if level[i][j] == "A":
                     floor = Floor((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight),lvlName)
-                    # floorGroup.add(floor)
+
                     staticGroup.add(floor)
                 elif level[i][j] == "B": #Vasija que contiene hidromiel
                     #orginal vase size is 4 times smaller than grid size
                     vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), 1)
-                    # vaseGroup.add(vase)
+
                     destructableGroup.add(vase)
                 elif level[i][j] == "C": #Vasija que contiene llave
                     #orginal vase size is 4 times smaller than grid size
                     vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), 2)
-                    # vaseGroup.add(vase)
+
                     destructableGroup.add(vase)
                 elif level[i][j] == "D":
                     npc = NPC((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight), guard, lvlName, subLevel)
@@ -159,7 +154,7 @@ class Phase(Scene):
                     interactableGroup.add(npc)
                 elif level[i][j] == "E":
                     platform = Platform((j*self.tileSize), (i*self.tileSize)-(l*self.tileSize-self.screenHeight),lvlName)
-                    # platformGroup.add(platform)
+
                     staticGroup.add(platform)
                 elif level[i][j] == "F":
                     offset = 0
@@ -172,7 +167,7 @@ class Phase(Scene):
                 elif level[i][j] == "G": #Vasija que contiene nada
                     #orginal vase size is 4 times smaller than grid size
                     vase = Vase((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight), 0)
-                    # vaseGroup.add(vase)
+
                     destructableGroup.add(vase)
                 elif level[i][j] == "H":
                     key = Key((j*self.tileSize + (self.tileSize / 4)), (i*self.tileSize + self.tileSize/2)-(l*self.tileSize-self.screenHeight))
@@ -271,12 +266,12 @@ class Olympus(Phase):
         if (self.currentLevel == 4 and self.screens[self.currentLevel][LEVEL_PROGRESSION] == 1):
             if not("Zeus" in Config.availableCharacters):
                 Config.availableCharacters.append("Zeus")
-            #self.director.changeScene(LevelSelectionMenu(self.director))
+
             if Config.availableLevels == []:
                 Config.availableLevels.append("TemploSubmarino")
                 Config.availableLevels.append("Infierno")
                 self.director.changeScene(LevelSelectionMenu(self.director))
-                #self.director.changeScene(Menu(self.director))
+
             else:
                 self.director.changeScene(LevelSelectionMenu(self.director))
 
@@ -305,7 +300,7 @@ class SubTemple(Phase):
         #grupos
 
         for level in range(len(self.levels)):
-            # print(level)
+
             if level == 0:
                 playerPos = (200, -520)
             elif level == 2:
@@ -446,7 +441,6 @@ class Menu(Scene):
         self.screens = []
         self.screens.append(InitialScreen(self))
         self.screens.append(OptionsScreen(self))
-        #self.screens.append(OptionsScreen(self))
         self.showScreen()
 
     def update(self, *args):
@@ -476,8 +470,6 @@ class Menu(Scene):
 
     def showScreen(self):
         self.currentScreen = 0
-    # def mostrarPantallaConfiguracion(self):
-    # self.pantallaActual = ...
 
 class MenuPause(Scene):
     def __init__(self, director):
@@ -524,7 +516,6 @@ class CharacterSelectionMenu(Scene):
 
         self.screens = []
         self.screens.append(SelectionScreen(self))
-        #self.screens.append(OptionsScreen(self))
         self.showScreen()
 
     def update(self, *args):
@@ -552,8 +543,6 @@ class CharacterSelectionMenu(Scene):
 
     def showScreen(self):
         self.currentScreen = 0
-    # def mostrarPantallaConfiguracion(self):
-    # self.pantallaActual = ...
 
 class LevelSelectionMenu(Scene):
     def __init__(self, director):
