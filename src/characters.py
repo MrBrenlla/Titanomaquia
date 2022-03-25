@@ -350,7 +350,7 @@ class Poseidon(GodRange):
 
 class Hades(GodMelee):
     def __init__(self, x, y):
-        GodMelee.__init__(self, "hades.png", "hades.txt", x, y,[4,1,2,5,1,3])
+        GodMelee.__init__(self, "hades.png", "hades.txt", x, y,[4,1,4,5,1,3])
         self.setMeleeRange(55, 60)
 
 class Demeter(GodMelee):
