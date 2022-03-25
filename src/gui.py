@@ -319,7 +319,6 @@ class LifeGUI(HUD):
             
         
         self.image = self.sheet.subsurface(self.datos[0])
-        #self.image = GestorRecursos.CargarImagen('HUD/' + spriteSheet, -1)
 
         super().__init__(self.image.get_rect())
         self.rect.y -= 20
